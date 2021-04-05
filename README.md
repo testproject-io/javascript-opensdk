@@ -1,3 +1,7 @@
+[![Build](https://github.com/testproject-io/javascript-opensdk/actions/workflows/build_online.yml/badge.svg)](https://github.com/testproject-io/javascript-opensdk/actions/workflows/build_online.yml)
+![npm (tag)](https://img.shields.io/npm/v/@tpio/javascript-opensdk/latest)
+![npm (tag)](https://img.shields.io/npm/v/@tpio/javascript-opensdk/beta)
+
 # TestProject JavaScript OpenSDK for Node.js
 
 [TestProject](https://testproject.io) is a **Free** Test Automation platform for Web, Mobile and API testing. \
