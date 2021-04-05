@@ -1,4 +1,4 @@
-# TestProject OpenSDK for Nodejs
+# TestProject JavaScript OpenSDK for Node.js
 
 [TestProject](https://testproject.io) is a **Free** Test Automation platform for Web, Mobile and API testing. \
 To get familiar with the TestProject, visit our main [documentation](https://docs.testproject.io/) website.
@@ -11,7 +11,7 @@ With one unified SDK available across multiple languages, developers and testers
 
 With TestProject SDK, users save a bunch of time and enjoy the following benefits out of the box:
 
-- 100% open source and available as an [NPM](https://www.npmjs.com/package/testproject-opensdk) package.
+- 100% open source and available as an [NPM](https://www.npmjs.com/package/@tpio/javascript-opensdk) package.
 - 5-minute simple Selenium setup with a single [Agent](https://docs.testproject.io/testproject-agents) deployment.
 - Automatic test reports in HTML/PDF format (including screenshots).
 - Collaborative reporting dashboards with execution history and RESTful API support.
@@ -34,10 +34,10 @@ To get started, you need to complete the following prerequisites checklist:
 
 ## Installation
 
-The TestProject JavaScript OpenSDK is available on [NPM](https://www.npmjs.com/package/testproject-opensdk). All you need to do is add it as an NPM module using::
+The TestProject JavaScript OpenSDK is available on [NPM](https://www.npmjs.com/package/@tpio/javascript-opensdk). All you need to do is add it as an NPM module using::
 
 ```shell
-npm install testproject-opensdk
+npm install @tpio/javascript-opensdk
 ```
 
 and you're good to go.
@@ -53,7 +53,7 @@ Here's an example of how to create a TestProject version of the `Chrome` driver:
 
 ```javascript
 // import { Builder } from 'selenium-webdriver';  <-- replace this import
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const createChromeDriver = async () => {
   const driver = await new Builder().forBrowser('chrome').build();
@@ -70,7 +70,7 @@ Here's a complete test example:
 
 ```javascript
 import { By } from 'selenium-webdriver';
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 export const simpleTest = async (): Promise<void> => {
   const driver = await new Builder().forBrowser('chrome').build();
@@ -112,7 +112,7 @@ Drivers search the developer token in an environment variable `TP_DEV_TOKEN`.\
 Alternatively, the token can be set using the `withToken` method on the builder:
 
 ```javascript
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const createChromeDriver = async () => {
   const driver = await new Builder().forBrowser('chrome').withToken('YOUR_TOKEN_GOES_HERE').build();
@@ -138,7 +138,7 @@ The job name will be set to the file name, skipping the `.spec.ts` suffix, for e
 Project and Job names can be also specified explicitly using the `withProjectName` and `withJobName` method of the builder:
 
 ```javascript
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const createChromeDriver = async () => {
   const driver = await new Builder()
@@ -167,7 +167,7 @@ This behavior can be overridden or disabled (see [Disabling Reports](#disabling-
 To report tests manually, use `driver.report().tests()` method and it's overloads, for example:
 
 ```javascript
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const createChromeDriver = async () => {
   const driver = await new Builder().forBrowser('chrome').build();
@@ -186,7 +186,7 @@ Steps are reported automatically when driver commands are executed.\
 If this feature is disabled, or in addition, manual reports can be performed, for example:
 
 ```javascript
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const testReportStepManually = async () => {
   const driver = await new Builder().forBrowser('chrome').build();
@@ -207,7 +207,7 @@ Doing so, allows us to present beautifully designed reports and statistics in it
 Reports can be completely disabled using the `setDisableReporting` method of the builder:
 
 ```javascript
-import { Builder } from 'testproject-opensdk';
+import { Builder } from '@tpio/javascript-opensdk';
 
 const testWithoutReports = async () => {
   const disableReports = true;
