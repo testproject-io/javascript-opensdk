@@ -1,0 +1,113 @@
+name: Build (Offline)
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-test-offline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+    steps:
+      # Checkout
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # All history
+
+      # Build SDK Version from git
+      - name: Set SDK version
+        run: |
+          # Tags
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TP_SDK_VERSION=$(git describe --tags --exact-match)
+          else
+            PARENT_TAG="$(git describe --tags --abbrev=0 || echo v0.0.0)"
+            TP_SDK_VERSION="${PARENT_TAG}-beta.$(git rev-list --all --count)"
+          fi
+          if [ "${TP_SDK_VERSION:0:1}" != "v" ]; then
+            >&2 echo "Git tag does not start with a 'v'!"
+            exit 1;
+          fi
+          TP_SDK_VERSION="${TP_SDK_VERSION:1}"
+          echo "TP_SDK_VERSION=${TP_SDK_VERSION}" >> $GITHUB_ENV
+
+      - name: Update package.json
+        run: echo "$(jq --arg sdk_version "${TP_SDK_VERSION}" '.version = $sdk_version' package.json)" > package.json
+
+      # Setup Node.js environment
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Build the SDK (in Release mode)
+      - name: Build
+        run: npm run build:release
+
+      # Run the unit-tests
+      - name: Run unit-tests
+        run: |
+          set -euo pipefail
+          mkdir reports
+          npm run test:unit | tee reports/unit_tests.txt
+          pwd
+          ls -l 
+          ls -l reports/
+
+      # Run a TestProject Agent + Chrome & Firefox headless browsers
+      - name: Run TestProject Agent (Offline)
+        if: matrix.node-version == '15.x'
+        run: |
+          trap 'kill $(jobs -p)' EXIT ERR
+          envsubst < .github/ci/docker-compose.yml > docker-compose.yml
+          docker-compose -f docker-compose.yml up -d
+          attempt_counter=0
+          max_attempts=45
+          docker-compose -f docker-compose.yml logs -f | tee reports/agent.log&
+          until curl -s http://localhost:8585/api/status | jq '.fsmState == "Ready"' | grep true; do
+            if [ ${attempt_counter} -eq ${max_attempts} ]; then
+              echo "Agent failed to register. Terminating..."
+              exit 1
+            fi
+            attempt_counter=$(($attempt_counter+1))
+            sleep 1
+          done
+
+      # Run all tests
+      - name: Run flow tests (partial)
+        if: matrix.node-version == '15.x'
+        env:
+          TP_DEV_TOKEN: "DUMMY_TOKEN"
+          TP_AGENT_URL: http://localhost:8585
+        run: |
+          set -euo pipefail
+          trap 'kill $(jobs -p)' EXIT ERR
+          docker-compose -f docker-compose.yml logs -f --tail=0 >> reports/agent.log&
+          npm run test | tee reports/all_tests.txt
+
+      # Create an SDK package (pull requests only)
+      - name: Build package
+        if: matrix.node-version == '15.x'
+        run: npm pack
+
+      # Archive the generated reports
+      - name: Archive reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: reports
+          path: reports
+
+      # Archive the generated package
+      - name: Archive package
+        if: ${{ success() && matrix.node-version == '15.x' }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: package
+          path: tpio-javascript-opensdk-${{ env.TP_SDK_VERSION }}.tgz
