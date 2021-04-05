@@ -1,5 +1,5 @@
 {
-  "name": "testproject-opensdk",
+  "name": "@tpio/javascript-opensdk",
   "author": {
     "name": "TestProject",
     "email": "support@testproject.io",
@@ -53,6 +53,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@jsdevtools/npm-publish": "^1.4.3",
     "@types/async": "^3.2.5",
     "@types/chai": "^4.2.15",
     "@types/chai-as-promised": "^7.1.3",
