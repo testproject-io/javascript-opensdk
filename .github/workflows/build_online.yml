@@ -121,6 +121,16 @@ jobs:
           token: ${{ secrets.TP_CI_NPM_TOKEN }}
           access: "public"
 
+      # Upload the npm package as a release asset
+      - name: Upload the npm package to GitHub release
+        if: matrix.node-version == '15.x' && startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: tpio-javascript-opensdk-${{ env.TP_SDK_VERSION }}.tgz
+          asset_name: tpio-javascript-opensdk-${{ env.TP_SDK_VERSION }}.tgz
+          tag: ${{ github.ref }}
+
       # Archive the generated reports
       - name: Archive reports
         if: ${{ always() }}
