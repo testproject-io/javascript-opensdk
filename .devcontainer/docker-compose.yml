@@ -1,0 +1,40 @@
+version: '3.1'
+services:
+  sdk:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace
+      - nodejs-opensdk-modules:/workspace/node_modules
+    links:
+      - testproject-agent
+      - chrome
+      - firefox
+    user: node
+    command: sleep infinity
+  testproject-agent:
+    image: testproject/agent:latest
+    restart: unless-stopped
+    depends_on:
+      - chrome
+      - firefox
+    environment:
+      TP_SDK_PORT: '8686'
+      CHROME: 'chrome:4444'
+      FIREFOX: 'firefox:4444'
+    volumes:
+      - ../reports:/var/testproject/agent/reports
+  chrome:
+    image: selenium/standalone-chrome
+    restart: unless-stopped
+    volumes:
+      - /dev/shm:/dev/shm
+  firefox:
+    image: selenium/standalone-firefox
+    restart: unless-stopped
+    volumes:
+      - /dev/shm:/dev/shm
+
+volumes:
+  nodejs-opensdk-modules:

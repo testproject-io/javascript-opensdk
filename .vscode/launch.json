@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "preLaunchTask": "npm: build",
+            "program": "node_modules/.bin/_mocha",
+            "env": {
+                "PATH": "${env:PATH}:${workspaceFolder}/node_modules/.bin"
+            },
+            "args": [
+                "--no-timeouts",
+                "--colors",
+                "--inspect",
+                "--exit",
+                // "${workspaceFolder}/dist/tests/**/*.spec.js"
+                // "${workspaceFolder}/dist/tests/ci/headless/chromeBasic.spec.js"
+                "${workspaceFolder}/dist/tests/examples/drivers/web/chromeDriver.spec.js"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}

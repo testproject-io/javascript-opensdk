@@ -1,0 +1,31 @@
+{
+  "name": "Node.js & TypeScript",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "sdk",
+  "workspaceFolder": "/workspace",
+  "remoteEnv": {
+    "TP_SDK_VERSION": "0.0.0",
+    "TP_AGENT_URL": "http://testproject-agent:8585",
+    "TP_DEV_TOKEN": "DUMMY_TOKEN"
+  },
+  // Set *default* container specific settings.json values on container create.
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens",
+    "tht13.html-preview-vscode"
+  ],
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "yarn install",
+  "postCreateCommand": "sudo chown node node_modules",
+  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "node"
+}
