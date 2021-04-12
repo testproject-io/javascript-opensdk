@@ -38,7 +38,7 @@ To get started, you need to complete the following prerequisites checklist:
 
 ## Installation
 
-The TestProject JavaScript OpenSDK is available on [NPM](https://www.npmjs.com/package/@tpio/javascript-opensdk). All you need to do is add it as an NPM module using::
+The TestProject JavaScript OpenSDK is available on [NPM](https://www.npmjs.com/package/@tpio/javascript-opensdk). All you need to do is add it as an NPM module using:
 
 ```shell
 npm install @tpio/javascript-opensdk
@@ -95,7 +95,7 @@ export const simpleTest = async (): Promise<void> => {
 ## Drivers
 
 TestProject's OpenSDK overrides standard Selenium drivers with extended functionality. \
-Below is the packages structure containing all supported drivers:
+Below is the package's structure containing all supported drivers:
 
 ```ascii
 src
@@ -112,7 +112,7 @@ src
 ## Development token
 
 The SDK uses a development token for communication with the Agent and the TestProject platform.\
-Drivers search the developer token in an environment variable `TP_DEV_TOKEN`.\
+Drivers search for the development token in an environment variable called `TP_DEV_TOKEN`.\
 Alternatively, the token can be set using the `withToken` method on the builder:
 
 ```javascript
@@ -131,15 +131,15 @@ const createChromeDriver = async () => {
 
 ## Implicit project and job names
 
-The SDK will attempt to infer Project and Job names automatically when running test using the [Mocha](https://mochajs.org) framework:
+The SDK will attempt to infer Project and Job names automatically when running tests using the [Mocha](https://mochajs.org) framework. For example:
 
-Directory `e2e_tests/chrome` contains `my_tests.spec.ts` test file.\
-When executing `my_tests.spec.ts`, The SDK will infer `e2e_tests/chrome` as the project name (replacing any slashes `/` with dots `.`).\
-The job name will be set to the file name, skipping the `.spec.ts` suffix, for example: `my_tests`.
+- Directory `e2e_tests/chrome` contains `my_tests.spec.ts` test file.
+- When executing `my_tests.spec.ts`, the SDK will infer `e2e_tests/chrome` as the project name (replacing any slashes `/` with dots `.`).
+- The job name will be set to the file name, skipping the `.spec.ts` suffix. In this example: `my_tests`.
 
 ## Explicit project and job names
 
-Project and Job names can be also specified explicitly using the `withProjectName` and `withJobName` method of the builder:
+Project and Job names can be also specified explicitly using the `withProjectName` and `withJobName` methods of the builder:
 
 ```javascript
 import { Builder } from '@tpio/javascript-opensdk';
@@ -163,12 +163,12 @@ const createChromeDriver = async () => {
 
 ## Automatic reporting
 
-Tests are reported automatically when a test **ends** or when driver _quits_.\
+Tests are reported automatically when a test **ends** or when the driver _quits_.\
 This behavior can be overridden or disabled (see [Disabling Reports](#disabling-reports) section below).
 
 ## Manual reporting
 
-To report tests manually, use `driver.report().tests()` method and it's overloads, for example:
+To report tests manually, use the `driver.report().tests()` method and its overloads. For example:
 
 ```javascript
 import { Builder } from '@tpio/javascript-opensdk';
@@ -187,7 +187,7 @@ const createChromeDriver = async () => {
 ```
 
 Steps are reported automatically when driver commands are executed.\
-If this feature is disabled, or in addition, manual reports can be performed, for example:
+If this feature is disabled (or in addition to automatic reports) manual reports can be performed. For example:
 
 ```javascript
 import { Builder } from '@tpio/javascript-opensdk';
@@ -206,7 +206,7 @@ const testReportStepManually = async () => {
 ## Disabling Reports
 
 TestProject OpenSDK reports all driver commands and their results to the TestProject Cloud.\
-Doing so, allows us to present beautifully designed reports and statistics in it's dashboards.
+Doing so allows us to present beautifully designed reports and statistics in its dashboards.
 
 Reports can be completely disabled using the `setDisableReporting` method of the builder:
 
@@ -227,7 +227,7 @@ const testWithoutReports = async () => {
 
 ## The importance of using the quit() method
 
-Even more so than with regular Selenium based tests, it is important to make sure that you call the `quit()` method of the driver object at the end of every test that uses the TestProject SDK.
+Even more so than with regular Selenium-based tests, it is important to make sure that you call the `quit()` method of the driver object at the end of every test that uses the TestProject SDK.
 Upon calling `quit()`, the SDK will send all remaining report items to the Agent, ensuring that your report on the TestProject platform is complete.
 
 # License
