@@ -77,6 +77,15 @@ export default class CustomHttpCommandExecutor extends Executor {
 
   private w3c: boolean;
 
+  /**
+   * List of commands that should not be reported
+   */
+  private static readonly NON_REPORTED_COMMANDS = [
+    SeleniumCommandName.NEW_SESSION,
+    SeleniumCommandName.QUIT,
+    SeleniumCommandName.SET_TIMEOUT,
+  ];
+
   constructor(capabilities: Capabilities) {
     const httpClient = new CustomHttpClient();
     super(httpClient);
@@ -149,6 +158,10 @@ export default class CustomHttpCommandExecutor extends Executor {
     let response: unknown;
     const copiedCommand = cloneDeep(command);
 
+    // Should the current command be automatically reported?
+    const autoCommandReport =
+      !skipReporting && CustomHttpCommandExecutor.NON_REPORTED_COMMANDS.indexOf(command.getName()) === -1;
+
     try {
       // Execute the selenium command
       response = await super.execute(command);
@@ -156,7 +169,7 @@ export default class CustomHttpCommandExecutor extends Executor {
       logger.error(error instanceof Error ? error.message : '');
 
       // Report the failed command
-      if (!skipReporting) {
+      if (autoCommandReport) {
         await this.reportCommand(copiedCommand, response, false);
       }
 
@@ -172,7 +185,7 @@ export default class CustomHttpCommandExecutor extends Executor {
     );
 
     // Report the command
-    if (!skipReporting) {
+    if (autoCommandReport) {
       await this.reportCommand(copiedCommand, response, true);
     }
 
