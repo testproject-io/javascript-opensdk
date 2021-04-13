@@ -134,7 +134,11 @@ class AgentClient {
             errMsg += `: ${(error.response as AxiosResponse<OperationResult>).data.message}`;
           }
 
-          // const agentMsg = (error.response?.data as OperationResult).message;
+          if (error.code === 'ECONNREFUSED') {
+            errMsg = `
+            Failed connecting to the TestProject Agent at ${this.remoteAddress}.
+            Please make sure that the TestProject Agent is running and try again.`;
+          }
           logger.error(errMsg);
           throw new SeleniumError.SessionNotCreatedError(errMsg);
         });
@@ -166,8 +170,10 @@ class AgentClient {
    */
   public async quitSession(): Promise<void> {
     // Drain the reporting queue before terminating the session
-    logger.debug('Waiting for the repoting queue to drain...');
-    await this.asyncReportingQueue?.drain();
+    if (this.asyncReportingQueue?.length()) {
+      logger.debug('Waiting for the reporting queue to drain...');
+      await this.asyncReportingQueue?.drain();
+    }
 
     // Close the development session TCP socket
     logger.debug('Closing the development session');

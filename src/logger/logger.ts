@@ -20,8 +20,12 @@ const customFormat = format.printf((msg) => {
 
   // Extract the filename and line number from the stack trace
   strace.get().every((element) => {
-    if (element.getFileName()?.includes('testproject/sdk')) {
-      fileMeta = `${element.getFileName()}:${element.getLineNumber()}`;
+    if (
+      element.getFileName()?.includes('javascript-opensdk/dist/src') &&
+      !element.getFileName()?.includes('logger.js')
+    ) {
+      const fileName = element.getFileName();
+      fileMeta = `${fileName.substring(fileName.indexOf('javascript-opensdk'))}:${element.getLineNumber()}`;
       return false;
     }
     return true;
@@ -37,7 +41,7 @@ const logger = createLogger({
       format: format.combine(
         format((info) => {
           const newInfo = info;
-          newInfo.level = info.level.toUpperCase();
+          newInfo.level = info.level.toUpperCase().padEnd(7, ' ');
           return newInfo;
         })(),
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
