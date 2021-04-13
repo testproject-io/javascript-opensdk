@@ -173,6 +173,26 @@ export default class Builder extends SeleniumBuilder {
   }
 
   /**
+   * Sets the URL of a remote WebDriver server to use. Once a remote URL has
+   * been specified, the builder direct all new clients to that server. If this
+   * method is never called, the Builder will attempt to create all clients
+   * locally.
+   *
+   * As an alternative to this method, you may also set the
+   * `SELENIUM_REMOTE_URL` environment variable.
+   *
+   * @param {string} url The URL of a remote server to use.
+   * @return {!Builder} A self reference.
+   */
+  usingServer(url: string): Builder {
+    throw new Error(
+      `usingServer(${url}) is not supported in TestProject drivers. 
+      All driver instances are managed by the TestProject Agent.`
+    );
+    return this;
+  }
+
+  /**
    * Sets the default action to take with an unexpected alert before returning
    * an error.
    *
@@ -365,7 +385,7 @@ export default class Builder extends SeleniumBuilder {
       case Browser.SAFARI:
         return createDriver(Safari, capabilities);
       default:
-        throw new Error(`Do not know how to build driver: ${browser}; did you forget to call usingServer(url)?`);
+        throw new Error(`Do not know how to build driver: ${browser}`);
     }
   }
 }
