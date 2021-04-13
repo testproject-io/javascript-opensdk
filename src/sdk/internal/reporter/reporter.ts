@@ -59,6 +59,8 @@ export default class Reporter {
    * @param {string} name - The test name
    * @param {boolean} passed - True(default) if the test should be marked as passed, False otherwise
    * @param {string} message - A message that goes with the test
+   *
+   * @returns {void}
    */
   public test(name?: string, passed = true, message?: string): void {
     if (!this.customCommandExecutor.disableReports) {
@@ -72,8 +74,20 @@ export default class Reporter {
           );
         }
       }
+
       const testReport = new CustomTestReport(testName, passed, message);
       this.customCommandExecutor.agentClient.reportTest(testReport);
     }
+  }
+
+  /**
+   * Disable auto reports
+   *
+   * @param {boolean} disabled - True for disable auto reports
+   *
+   * @returns {void}
+   */
+  public disableAutoTestReports(disabled: boolean): void {
+    this.customCommandExecutor.disableAutoTestReports = disabled;
   }
 }
