@@ -152,7 +152,7 @@ export default class CustomHttpCommandExecutor extends Executor {
     const copiedCommand = cloneDeep(command);
 
     try {
-      // Execute the selenum command
+      // Execute the selenium command
       response = super.execute(command) as unknown;
 
       // Handling sleep after execution

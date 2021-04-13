@@ -16,13 +16,13 @@ import { Options } from 'selenium-webdriver/safari';
 
 import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
 import Reporter from '../../internal/reporter/reporter';
-import IBaseDriver from '../base/baseDriver';
+import IReportingDriver from '../base/reportingDriver';
 
 /**
  * Safari class that extend original Safari driver - implement ItenableBaseDriver using the BaseDriver
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor)
  */
-class Safari extends WebDriver implements IBaseDriver {
+export default class Safari extends WebDriver implements IReportingDriver {
   private static executer: CustomHttpCommandExecutor;
 
   private reporter!: Reporter;
@@ -42,6 +42,8 @@ class Safari extends WebDriver implements IBaseDriver {
 
   /**
    * Returns an object that has the option to create custom test and report
+   * @implements {IReportingDriver}
+   *
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
@@ -53,5 +55,3 @@ class Safari extends WebDriver implements IBaseDriver {
     return this.reporter;
   }
 }
-
-export default Safari;

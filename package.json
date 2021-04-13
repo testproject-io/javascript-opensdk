@@ -66,7 +66,6 @@
     "@typescript-eslint/parser": "^4.17.0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
-    "chromedriver": "^88.0.0",
     "eslint": "^7.21.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",

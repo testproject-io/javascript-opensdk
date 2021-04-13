@@ -13,14 +13,14 @@
 
 import { promise } from 'selenium-webdriver';
 
+import BaseDriver from './baseDriver';
 import Reporter from '../../internal/reporter/reporter';
-import IBaseDriver from './baseDriver';
 
 /**
- * Thenable Base Driver - extand base driver and IThenable BaseDriver
+ * Thenable Base Driver - Extends base driver and IThenable BaseDriver
  * @interface
  */
-export default interface ThenableBaseDriver extends IBaseDriver, promise.IThenable<IBaseDriver> {
+export default interface ThenableBaseDriver extends BaseDriver, promise.IThenable<BaseDriver> {
   /**
    * @method report
    */
