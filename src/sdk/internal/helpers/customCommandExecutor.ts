@@ -78,8 +78,6 @@ export default class CustomHttpCommandExecutor extends Executor {
   private w3c: boolean;
 
   constructor(capabilities: Capabilities) {
-    logger.debug('CustomHttpCommandExecutor Constructor started');
-
     const httpClient = new CustomHttpClient();
     super(httpClient);
 
@@ -153,23 +151,29 @@ export default class CustomHttpCommandExecutor extends Executor {
 
     try {
       // Execute the selenium command
-      response = super.execute(command) as unknown;
-
-      // Handling sleep after execution
-      await CustomHttpCommandExecutor.handleSleep(
-        currentSettings.sleepTimingType,
-        currentSettings.sleepTime,
-        copiedCommand
-      );
+      response = await super.execute(command);
     } catch (error) {
       logger.error(error instanceof Error ? error.message : '');
-      response = false;
-    } finally {
-      const passed: boolean = response !== false;
 
+      // Report the failed command
       if (!skipReporting) {
-        await this.reportCommand(copiedCommand, response, passed);
+        await this.reportCommand(copiedCommand, response, false);
       }
+
+      // Rethrow the error
+      throw error;
+    }
+
+    // Handling sleep after execution
+    await CustomHttpCommandExecutor.handleSleep(
+      currentSettings.sleepTimingType,
+      currentSettings.sleepTime,
+      copiedCommand
+    );
+
+    // Report the command
+    if (!skipReporting) {
+      await this.reportCommand(copiedCommand, response, true);
     }
 
     return response;
@@ -180,15 +184,6 @@ export default class CustomHttpCommandExecutor extends Executor {
    */
   public updateKnownTestName(): void {
     const currentTestName = ReportHelper.inferTestName();
-
-    // if (currentTestName !== this.latestKnownTestName || currentTestName !== 'Unnamed Test'
-    // ) {
-    // //  the name of the test method has changed and we're not inside a unittest teardown method,
-    // //  so we need to report a test
-    // if (!this.disableAutoTestReports) {
-    //     this.ReportTest();
-    // }
-
     this.latestKnownTestName = currentTestName;
   }
 
