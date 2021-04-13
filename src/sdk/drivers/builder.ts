@@ -67,6 +67,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Configures the target browser for clients created by this instance.
+   * @override
    *
    * @param {string} name - The name of the target browse (Chrome, Ie etc...)
    * @param {string} opt_version - A desired version
@@ -80,6 +81,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets the proxy configuration for the target browser.
+   * @override
    *
    * @param {Object | Capabilities} capabilities - The desired capabilities for a new session
    *
@@ -195,6 +197,7 @@ export default class Builder extends SeleniumBuilder {
   /**
    * Sets the default action to take with an unexpected alert before returning
    * an error.
+   * @override
    *
    * @param {string} behavior The desired behavior; should be "accept",
    *     "dismiss", or "ignore". Defaults to "dismiss".
@@ -207,6 +210,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets Chrome specific options for drivers created by this builder.
+   * @override
    *
    * @param {ChromeOptions} options - chrome options.
    *
@@ -219,6 +223,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets the control flow that created drivers should execute actions in.
+   * @override
    *
    * @param {promise.ControlFlow} flow The control flow to use, or {@code null} to.
    *
@@ -230,6 +235,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets Edge specific options for drivers created by this builder.
+   * @override
    *
    * @param {EdgeOptions} options - Edge option.
    *
@@ -241,6 +247,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets whether native events should be used.
+   * @override
    *
    * @param {boolean} enabled - Whether to enable native events.
    *
@@ -252,6 +259,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets Firefox specific options for drivers created by this builder.
+   * @override
    *
    * @param {FireFoxOptions} options - firefox options.
    *
@@ -263,6 +271,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets Ie specific options for drivers created by this builder.
+   * @override
    *
    * @param {IeOptions} options - IE options.
    *
@@ -274,6 +283,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets the logging preferences for the created session.
+   * @override
    *
    * @param {logging.Preferences | Object} prefs - The desired logging preferences.
    *
@@ -286,7 +296,10 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets the proxy configuration for the target browser.
+   * @override
+   *
    * @param {ProxyConfig} config - The configuration to use.
+   *
    * @returns {Builder} A self reference.
    */
   setProxy(config: ProxyConfig): Builder {
@@ -295,6 +308,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets Safari specific options for drivers created by this builder.
+   * @override
    *
    * @param {SafariOptions} options - Safari options.
    *
@@ -306,6 +320,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Sets how elements should be scrolled into view for interaction.
+   * @override
    *
    * @param {number} behavior - The desired scroll behavior: either 0 to align with the top
    * of the viewport or 1 to align with the bottom.
@@ -330,6 +345,7 @@ export default class Builder extends SeleniumBuilder {
 
   /**
    * Creates a new WebDriver client based on this builder's current configuration.
+   * @override
    *
    * @returns {ThenableWebDriver} A new WebDriver instance.
    */
