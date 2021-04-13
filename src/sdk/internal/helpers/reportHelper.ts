@@ -90,8 +90,8 @@ export default class ReportHelper {
 
     let result = 'Unnamed Job';
 
-    const currentTestInfo = process.env.MOCHA_IT;
-    if (currentTestInfo) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    if (detectMocha()) {
       logger.debug('Attempting to infer job name using inspect.stack()');
       logger.debug("Inferred job name '{result}' from inspect.stack()");
       const callStackList = stackTraceGet();
