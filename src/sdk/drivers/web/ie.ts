@@ -16,13 +16,13 @@ import { Options } from 'selenium-webdriver/ie';
 
 import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
 import Reporter from '../../internal/reporter/reporter';
-import IBaseDriver from '../base/baseDriver';
+import IReportingDriver from '../base/reportingDriver';
 
 /**
  * Used to create a new Ie browser instance
  * @property {CustomHttpCommandExecutor} executer - Extension of the Selenium Connection (command_executor) class
  */
-class Ie extends WebDriver implements IBaseDriver {
+export default class Ie extends WebDriver implements IReportingDriver {
   private static executer: CustomHttpCommandExecutor;
 
   private reporter!: Reporter;
@@ -42,7 +42,9 @@ class Ie extends WebDriver implements IBaseDriver {
 
   /**
    * Returns an object that has the option to create custom test and report
-   * @returns {Reporter} Instance of the TestProject Reporter
+   * @implements {IReportingDriver}
+   *
+   * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
     // Create new reporter instance if doesn't exists
@@ -53,5 +55,3 @@ class Ie extends WebDriver implements IBaseDriver {
     return this.reporter;
   }
 }
-
-export default Ie;

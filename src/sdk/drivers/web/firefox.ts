@@ -15,13 +15,13 @@ import { Capabilities, CreateSessionCapabilities } from 'selenium-webdriver';
 import { Driver as FireFoxDriver, Options } from 'selenium-webdriver/firefox';
 import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
 import Reporter from '../../internal/reporter/reporter';
-import IBaseDriver from '../base/baseDriver';
+import IReportingDriver from '../base/reportingDriver';
 
 /**
  * Used to create a new Firefox browser instance
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor)
  */
-export default class FireFox extends FireFoxDriver implements IBaseDriver {
+export default class FireFox extends FireFoxDriver implements IReportingDriver {
   private static executer: CustomHttpCommandExecutor;
 
   private reporter!: Reporter;
@@ -41,7 +41,9 @@ export default class FireFox extends FireFoxDriver implements IBaseDriver {
 
   /**
    * Returns an object that has the option to create custom test and report
-   * @returns {Reporter} Instance of the TestProject Reporter
+   * @implements {IReportingDriver}
+   *
+   * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
     // Create new reporter instance if doesn't exists

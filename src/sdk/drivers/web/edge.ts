@@ -16,13 +16,13 @@ import { Options } from 'selenium-webdriver/edge';
 
 import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
 import Reporter from '../../internal/reporter/reporter';
-import IBaseDriver from '../base/baseDriver';
+import IReportingDriver from '../base/reportingDriver';
 
 /**
  * Used to create a new Edge browser instance
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor) class
  */
-export default class Edge extends WebDriver implements IBaseDriver {
+export default class Edge extends WebDriver implements IReportingDriver {
   private static executer: CustomHttpCommandExecutor;
 
   private reporter!: Reporter;
@@ -42,6 +42,8 @@ export default class Edge extends WebDriver implements IBaseDriver {
 
   /**
    * Returns an object that has the option to create custom test and report
+   * @implements {IReportingDriver}
+   *
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
