@@ -14,16 +14,15 @@
             "preLaunchTask": "npm: build",
             "program": "node_modules/.bin/_mocha",
             "env": {
-                "PATH": "${env:PATH}:${workspaceFolder}/node_modules/.bin"
+                "PATH": "${env:PATH}:${workspaceFolder}/node_modules/.bin",
+                "TP_DEV_TOKEN": "DUMMY"
             },
             "args": [
                 "--no-timeouts",
                 "--colors",
                 "--inspect",
                 "--exit",
-                // "${workspaceFolder}/dist/tests/**/*.spec.js"
-                // "${workspaceFolder}/dist/tests/ci/headless/chromeBasic.spec.js"
-                "${workspaceFolder}/dist/tests/examples/drivers/web/chromeDriver.spec.js"
+                "${workspaceFolder}/dist/tests/**/*.spec.js"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }
