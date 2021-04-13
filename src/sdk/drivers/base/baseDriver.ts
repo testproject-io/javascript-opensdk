@@ -11,16 +11,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { WebDriver } from 'selenium-webdriver';
+import { WebDriver, Capabilities } from 'selenium-webdriver';
 
+import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
 import Reporter from '../../internal/reporter/reporter';
+import IReportingDriver from './reportingDriver';
 
-/**
- * IBaseDriver interface that extand Selenium WebDriver
- */
-export default interface IBaseDriver extends WebDriver {
+export default class BaseDriver extends WebDriver implements IReportingDriver {
+  private static executer: CustomHttpCommandExecutor;
+
+  private reporter!: Reporter;
+
+  static createSession(caps: Capabilities): BaseDriver {
+    const customCommandExecutor = new CustomHttpCommandExecutor(caps);
+    BaseDriver.executer = customCommandExecutor;
+
+    return super.createSession(customCommandExecutor, caps) as BaseDriver;
+  }
+
   /**
-   * @returns {Reporter} Instance of a TestProject Repoter class.
+   * Returns an object that has the option to create custom test and report
+   * @returns {Reporter} - Instance of the TestProject Reporter
    */
-  report(): Reporter;
+  report(): Reporter {
+    // Create new reporter instance if doesn't exists
+    if (!this.reporter) {
+      this.reporter = new Reporter(BaseDriver.executer);
+    }
+
+    return this.reporter;
+  }
 }
