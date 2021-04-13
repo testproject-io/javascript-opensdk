@@ -48,6 +48,11 @@ import ReportType from '../../enums/reportType';
  * @property {boolean | undefined} disableReports - Disable report flag
  */
 export default class Builder extends SeleniumBuilder {
+  /**
+   * Default implicit wait timeout in milliseconds.
+   */
+  private static readonly DEFAULT_IMPLICIT_TIMEOUT = 15000;
+
   /* TestProject Extensions */
   token: string | undefined;
 
@@ -385,23 +390,36 @@ export default class Builder extends SeleniumBuilder {
     // Always set the report type (Cloud & Local as default)
     capabilities.set(TestProjectCapabilities.REPORT_TYPE, ReportType[this.reportType]);
 
-    // Check for a native browser.
+    // Create a driver instance
+    let driver: ThenableBaseDriver;
+
     switch (browser) {
       case Browser.CHROME:
         // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
         capabilities.set('goog:chromeOptions', (this.chromeOptions as any)?.options_);
-        return createDriver(Chrome, capabilities);
+        driver = createDriver(Chrome, capabilities);
+        break;
       case Browser.FIREFOX:
         capabilities.merge(this.getFirefoxOptions());
-        return createDriver(Firefox, capabilities);
+        driver = createDriver(Firefox, capabilities);
+        break;
       case Browser.IE:
-        return createDriver(IE, capabilities);
+        driver = createDriver(IE, capabilities);
+        break;
       case Browser.EDGE:
-        return createDriver(Edge, capabilities);
+        driver = createDriver(Edge, capabilities);
+        break;
       case Browser.SAFARI:
-        return createDriver(Safari, capabilities);
+        driver = createDriver(Safari, capabilities);
+        break;
       default:
         throw new Error(`Do not know how to build driver: ${browser}`);
     }
+
+    // Set default implicit wait
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    driver.manage().timeouts().implicitlyWait(Builder.DEFAULT_IMPLICIT_TIMEOUT);
+
+    return driver;
   }
 }
