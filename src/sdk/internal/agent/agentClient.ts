@@ -170,8 +170,10 @@ class AgentClient {
    */
   public async quitSession(): Promise<void> {
     // Drain the reporting queue before terminating the session
-    logger.debug('Waiting for the repoting queue to drain...');
-    await this.asyncReportingQueue?.drain();
+    if (this.asyncReportingQueue?.length()) {
+      logger.debug('Waiting for the reporting queue to drain...');
+      await this.asyncReportingQueue?.drain();
+    }
 
     // Close the development session TCP socket
     logger.debug('Closing the development session');
