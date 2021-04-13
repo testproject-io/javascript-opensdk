@@ -31,6 +31,8 @@ describe('Test is reported as passed and failed with additional step', () => {
       .withToken(ConfigHelper.developerToken())
       .withCapabilities(Capabilities.chrome())
       .build();
+
+    driver.report().disableAutoTestReports(true);
   });
 
   afterEach(async () => {
