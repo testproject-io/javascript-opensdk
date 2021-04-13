@@ -134,7 +134,11 @@ class AgentClient {
             errMsg += `: ${(error.response as AxiosResponse<OperationResult>).data.message}`;
           }
 
-          // const agentMsg = (error.response?.data as OperationResult).message;
+          if (error.code === 'ECONNREFUSED') {
+            errMsg = `
+            Failed connecting to the TestProject Agent at ${this.remoteAddress}.
+            Please make sure that the TestProject Agent is running and try again.`;
+          }
           logger.error(errMsg);
           throw new SeleniumError.SessionNotCreatedError(errMsg);
         });
