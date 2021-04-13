@@ -225,6 +225,24 @@ const testWithoutReports = async () => {
 };
 ```
 
+If reports were not disabled when the driver was created, they can be disabled or enabled later.
+However, if reporting was explicitly disabled when the driver was created, they **cannot** be enabled later.
+
+Reports can be temporarily disable using the `disableAutoTestReports` method of `report()` and enabled later:
+
+```javascript
+import { Builder } from '@tpio/javascript-opensdk';
+
+const testTemporarilyDisableAllReportingThenReenableItLater = async () => {
+  const driver = await new Builder().forBrowser('chrome').build();
+
+  driver.report().disableAutoTestReports(true);
+  await this.driver.get('https://example.testproject.io/web/'); //This statement will not be reported
+  driver.report().disableAutoTestReports(false);
+  await driver.quit();
+};
+```
+
 ## The importance of using the quit() method
 
 Even more so than with regular Selenium-based tests, it is important to make sure that you call the `quit()` method of the driver object at the end of every test that uses the TestProject SDK.
