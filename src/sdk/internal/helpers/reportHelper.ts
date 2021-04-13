@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 // Copyright 2021 TestProject (https://testproject.io)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -90,8 +91,7 @@ export default class ReportHelper {
 
     let result = 'Unnamed Job';
 
-    const currentTestInfo = process.env.MOCHA_IT;
-    if (currentTestInfo) {
+    if (detectMocha()) {
       logger.debug('Attempting to infer job name using inspect.stack()');
       logger.debug("Inferred job name '{result}' from inspect.stack()");
       const callStackList = stackTraceGet();
