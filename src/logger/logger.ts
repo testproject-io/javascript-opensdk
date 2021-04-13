@@ -41,7 +41,7 @@ const logger = createLogger({
       format: format.combine(
         format((info) => {
           const newInfo = info;
-          newInfo.level = info.level.toUpperCase();
+          newInfo.level = info.level.toUpperCase().padEnd(7, ' ');
           return newInfo;
         })(),
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
