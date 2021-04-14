@@ -157,10 +157,10 @@ export default class CustomHttpCommandExecutor extends Executor {
     this.latestKnownTestName = currentTestName;
 
     // Handling time out before execution
-    await this.handleTimeOut(currentSettings?.timeout, this.sessionId ?? '');
+    await this.handleTimeOut(this.settings?.timeout, this.sessionId ?? '');
 
     // Handling sleep before execution
-    await CustomHttpCommandExecutor.handleSleep(currentSettings.sleepTimingType, currentSettings.sleepTime, command);
+    await CustomHttpCommandExecutor.handleSleep(this.settings.sleepTimingType, this.settings.sleepTime, command);
 
     let response: unknown;
     const copiedCommand = cloneDeep(command);
@@ -173,7 +173,7 @@ export default class CustomHttpCommandExecutor extends Executor {
       // Execute the selenium command
       response = await super.execute(command);
     } catch (error) {
-      logger.error(error instanceof Error ? error.message : '');
+      // logger.error(error instanceof Error ? error.message : '');
 
       // Report the failed command
       if (autoCommandReport) {
@@ -185,11 +185,7 @@ export default class CustomHttpCommandExecutor extends Executor {
     }
 
     // Handling sleep after execution
-    await CustomHttpCommandExecutor.handleSleep(
-      currentSettings.sleepTimingType,
-      currentSettings.sleepTime,
-      copiedCommand
-    );
+    await CustomHttpCommandExecutor.handleSleep(this.settings.sleepTimingType, this.settings.sleepTime, copiedCommand);
 
     // Report the command
     if (autoCommandReport) {
