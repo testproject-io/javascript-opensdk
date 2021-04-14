@@ -13,7 +13,7 @@
 
 import { By } from 'selenium-webdriver';
 
-import ThenableBaseDriver from '../../../src/sdk/drivers/base/thenableBaseDriver';
+import ThenableBaseDriver from '../../../../src/sdk/drivers/base/thenableBaseDriver';
 
 export default class LoginPage {
   url = 'https://example.testproject.io/web/';

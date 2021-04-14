@@ -14,8 +14,8 @@
 import { assert } from 'chai';
 import { Capabilities } from 'selenium-webdriver';
 
-import LoginPage from '../../pageobjects/web/loginPage';
-import ProfilePage from '../../pageobjects/web/profilePage';
+import LoginPage from '../pageobjects/web/loginPage';
+import ProfilePage from '../pageobjects/web/profilePage';
 
 import ConfigHelper from '../../../src/sdk/internal/helpers/configHelper';
 import ThenableBaseDriver from '../../../src/sdk/drivers/base/thenableBaseDriver';
