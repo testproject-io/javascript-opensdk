@@ -98,7 +98,11 @@ class AgentClient {
     // Create and asynchronous queue for reporting results to the Agent
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.asyncReportingQueue = async.queue(async (task: QueueItem, callback: async.ErrorCallback) => {
-      logger.verbose(`Sending POST to Agent: ${task.endPoint}\n${JSON.stringify(task.reportAsJson)}`);
+      let jsonString = JSON.stringify(task.reportAsJson);
+      if (jsonString.length > 256) {
+        jsonString = `${jsonString.substring(0, 256)}...`;
+      }
+      logger.debug(`Sending POST to Agent: ${task.endPoint}\n${jsonString}`);
 
       // Report the command to the Agent
       const response = await AgentClientRest.Post(task.url, task.reportAsJson, this.token);
