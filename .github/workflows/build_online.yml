@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-publish:
     # Do not run on PRs from forks
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}  
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir reports
-          npm run test:unit | tee reports/unit_tests.txt
+          npm run tests:unit | tee reports/unit_tests.txt
           pwd
           ls -l 
           ls -l reports/
@@ -70,7 +70,7 @@ jobs:
       - name: Run and Register TestProject Agent
         if: matrix.node-version == '15.x'
         env:
-          TP_API_KEY: ${{ secrets.TP_CI_API_KEY }}        
+          TP_API_KEY: ${{ secrets.TP_CI_API_KEY }}
         run: |
           trap 'kill $(jobs -p)' EXIT ERR
           envsubst < .github/ci/docker-compose.yml > docker-compose.yml
@@ -97,7 +97,32 @@ jobs:
           set -euo pipefail
           trap 'kill $(jobs -p)' EXIT ERR
           docker-compose -f docker-compose.yml logs -f --tail=0 >> reports/agent.log&
-          npm run test | tee reports/all_tests.txt
+          npm run tests | tee reports/all_tests.txt
+
+      # # Run examples
+      # - name: Run examples
+      #   if: matrix.node-version == '15.x'
+      #   # SDK changes may require examples update, so don't fail the job if this step fails
+      #   continue-on-error: true
+      #   env:
+      #     TP_DEV_TOKEN: ${{ secrets.TP_CI_DEV_TOKEN }}
+      #     TP_AGENT_URL: http://localhost:8585
+      #   run: |
+      #     set -euo pipefail
+      #     trap 'kill $(jobs -p)' EXIT ERR
+      #     docker-compose -f docker-compose.yml logs -f --tail=0 >> reports/agent.log&
+
+      #     # Clone the examples repo
+      #     git clone https://github.com/testproject-io/opensdk-examples .opensdk-examples
+      #     cd .opensdk-examples
+
+      #     # Install dependencies, build and run
+      #     npm install
+      #     npm run build
+      #     npm run tests | tee reports/examples.txt
+
+      #     # Cleanup
+      #     rm -rf .opensdk-examples
 
       # Create an SDK package (pull requests only)
       - name: Build package

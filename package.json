@@ -35,8 +35,8 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "build": "tsc --build ./tsconfig.debug.json",
     "build:release": "tsc --build ./tsconfig.release.json",
-    "test": "node_modules/.bin/_mocha --no-timeouts --exit dist/tests/**/*.spec.js",
-    "test:unit": "node_modules/.bin/_mocha --no-timeouts --exit dist/tests/ci/unittests/**/*.spec.js"
+    "tests": "node_modules/.bin/_mocha --no-timeouts --exit dist/tests/**/*.spec.js",
+    "tests:unit": "node_modules/.bin/_mocha --no-timeouts --exit dist/tests/ci/unittests/**/*.spec.js"
   },
   "dependencies": {
     "@types/selenium-webdriver": "^3.0.17",
