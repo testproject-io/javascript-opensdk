@@ -28,7 +28,7 @@ import { Options as IeOptions } from 'selenium-webdriver/ie';
 import { Options as SafariOptions } from 'selenium-webdriver/safari';
 
 import TestProjectCapabilities from '../internal/helpers/customCapabilities';
-import ThenableBaseDriver, { createDriver } from './base/thenableBaseDriver';
+import ThenableBaseDriver, { createDriver } from './web/base/thenableBaseDriver';
 import customExceptions from '../exceptions';
 import Firefox from './web/firefox';
 import Chrome from './web/chrome';

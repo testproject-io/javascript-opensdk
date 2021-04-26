@@ -14,18 +14,16 @@
 import { Capabilities, CreateSessionCapabilities, WebDriver } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/ie';
 
-import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
-import Reporter from '../../internal/reporter/reporter';
-import IReportingDriver from '../base/reportingDriver';
+import CustomHttpCommandExecutor from '../../internal/helpers/seleniumCommandExecutor';
+import Reporter from '../../reporter/reporter';
+import IReportingDriver from '../interfaces/reportingDriver';
 
 /**
  * Used to create a new Ie browser instance
  * @property {CustomHttpCommandExecutor} executer - Extension of the Selenium Connection (command_executor) class
  */
 export default class Ie extends WebDriver implements IReportingDriver {
-  private static executer: CustomHttpCommandExecutor;
-
-  private reporter!: Reporter;
+  private executor: CustomHttpCommandExecutor | null = null;
 
   /**
    * Creates a new session with the Ie.
@@ -35,9 +33,12 @@ export default class Ie extends WebDriver implements IReportingDriver {
   static createSession(opt_config?: Options | CreateSessionCapabilities): Ie {
     const caps = opt_config as Capabilities;
     const customCommandExecutor = new CustomHttpCommandExecutor(caps);
-    Ie.executer = customCommandExecutor;
 
-    return /** @type {!Driver} */ super.createSession(customCommandExecutor, caps) as Ie;
+    // Create and initialize a new instance
+    const instance = super.createSession(caps, customCommandExecutor) as Ie;
+    instance.executor = customCommandExecutor;
+
+    return instance;
   }
 
   /**
@@ -47,11 +48,10 @@ export default class Ie extends WebDriver implements IReportingDriver {
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
-    // Create new reporter instance if doesn't exists
-    if (!this.reporter) {
-      this.reporter = new Reporter(Ie.executer);
+    if (!this.executor) {
+      throw new Error('Reporter not available due to incorrect driver construction!');
     }
 
-    return this.reporter;
+    return this.executor.reporter;
   }
 }

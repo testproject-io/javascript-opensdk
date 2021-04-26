@@ -14,18 +14,16 @@
 import { Capabilities, CreateSessionCapabilities, WebDriver } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/edge';
 
-import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
-import Reporter from '../../internal/reporter/reporter';
-import IReportingDriver from '../base/reportingDriver';
+import CustomHttpCommandExecutor from '../../internal/helpers/seleniumCommandExecutor';
+import Reporter from '../../reporter/reporter';
+import IReportingDriver from '../interfaces/reportingDriver';
 
 /**
  * Used to create a new Edge browser instance
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor) class
  */
 export default class Edge extends WebDriver implements IReportingDriver {
-  private static executer: CustomHttpCommandExecutor;
-
-  private reporter!: Reporter;
+  private executor: CustomHttpCommandExecutor | null = null;
 
   /**
    * Creates a new session with the Edge.
@@ -35,9 +33,12 @@ export default class Edge extends WebDriver implements IReportingDriver {
   static createSession(opt_config?: Options | CreateSessionCapabilities): Edge {
     const caps = opt_config as Capabilities;
     const customCommandExecutor = new CustomHttpCommandExecutor(caps);
-    Edge.executer = customCommandExecutor;
 
-    return super.createSession(customCommandExecutor, caps) as Edge;
+    // Create and initialize a new instance
+    const instance = super.createSession(customCommandExecutor, caps) as Edge;
+    instance.executor = customCommandExecutor;
+
+    return instance;
   }
 
   /**
@@ -47,11 +48,10 @@ export default class Edge extends WebDriver implements IReportingDriver {
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
-    // Create new reporter instance if doesn't exists
-    if (!this.reporter) {
-      this.reporter = new Reporter(Edge.executer);
+    if (!this.executor) {
+      throw new Error('Reporter not available due to incorrect driver construction!');
     }
 
-    return this.reporter;
+    return this.executor.reporter;
   }
 }

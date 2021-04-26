@@ -14,18 +14,16 @@
 import { Capabilities, CreateSessionCapabilities } from 'selenium-webdriver';
 import { Driver as ChromeDriver, Options } from 'selenium-webdriver/chrome';
 
-import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
-import Reporter from '../../internal/reporter/reporter';
-import IReportingDriver from '../base/reportingDriver';
+import CustomHttpCommandExecutor from '../../internal/helpers/seleniumCommandExecutor';
+import Reporter from '../../reporter/reporter';
+import IReportingDriver from '../interfaces/reportingDriver';
 
 /**
  * Chrome class that extend original chrome driver - implement ItenableBaseDriver using the BaseDriver
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor)
  */
 export default class Chrome extends ChromeDriver implements IReportingDriver {
-  private static executer: CustomHttpCommandExecutor;
-
-  private reporter!: Reporter;
+  private executor: CustomHttpCommandExecutor | null = null;
 
   /**
    * Creates a new session with the Chrome.
@@ -35,9 +33,12 @@ export default class Chrome extends ChromeDriver implements IReportingDriver {
   static createSession(opt_config?: Options | CreateSessionCapabilities): Chrome {
     const caps = opt_config as Capabilities;
     const customCommandExecutor = new CustomHttpCommandExecutor(caps);
-    Chrome.executer = customCommandExecutor;
 
-    return super.createSession(caps, customCommandExecutor) as Chrome;
+    // Create and initialize a new instance
+    const instance = super.createSession(caps, customCommandExecutor) as Chrome;
+    instance.executor = customCommandExecutor;
+
+    return instance;
   }
 
   /**
@@ -47,11 +48,10 @@ export default class Chrome extends ChromeDriver implements IReportingDriver {
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
-    // Create new reporter instance if doesn't exists
-    if (!this.reporter) {
-      this.reporter = new Reporter(Chrome.executer);
+    if (!this.executor) {
+      throw new Error('Reporter not available due to incorrect driver construction!');
     }
 
-    return this.reporter;
+    return this.executor.reporter;
   }
 }

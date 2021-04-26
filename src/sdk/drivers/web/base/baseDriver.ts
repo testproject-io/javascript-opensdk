@@ -13,20 +13,21 @@
 
 import { WebDriver, Capabilities } from 'selenium-webdriver';
 
-import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
-import Reporter from '../../internal/reporter/reporter';
-import IReportingDriver from './reportingDriver';
+import CustomHttpCommandExecutor from '../../../internal/helpers/seleniumCommandExecutor';
+import Reporter from '../../../reporter/reporter';
+import IReportingDriver from '../../interfaces/reportingDriver';
 
 export default class BaseDriver extends WebDriver implements IReportingDriver {
-  private static executer: CustomHttpCommandExecutor;
-
-  private reporter!: Reporter;
+  private executor: CustomHttpCommandExecutor | null = null;
 
   static createSession(caps: Capabilities): BaseDriver {
     const customCommandExecutor = new CustomHttpCommandExecutor(caps);
-    BaseDriver.executer = customCommandExecutor;
 
-    return super.createSession(customCommandExecutor, caps) as BaseDriver;
+    // Create and initialize a new instance
+    const instance = super.createSession(customCommandExecutor, caps) as BaseDriver;
+    instance.executor = customCommandExecutor;
+
+    return instance;
   }
 
   /**
@@ -34,11 +35,10 @@ export default class BaseDriver extends WebDriver implements IReportingDriver {
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
-    // Create new reporter instance if doesn't exists
-    if (!this.reporter) {
-      this.reporter = new Reporter(BaseDriver.executer);
+    if (!this.executor) {
+      throw new Error('Reporter not available due to incorrect driver construction!');
     }
 
-    return this.reporter;
+    return this.executor.reporter;
   }
 }
