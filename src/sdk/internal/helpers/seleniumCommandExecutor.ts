@@ -20,6 +20,7 @@ import sleep from 'sleep-promise';
 
 import CustomHttpClient from './customHttpClient';
 import AgentClient from '../agent/agentClient';
+import Reporter from '../../reporter/reporter';
 import ReportHelper from './reportHelper';
 import StepSettings from '../../../classes/stepSettings';
 import DriverCommandReport from '../../../rest/messages/driverCommandReport';
@@ -53,11 +54,7 @@ import RedactHelper from './redactHelper';
 export default class CustomHttpCommandExecutor extends Executor {
   public readonly agentClient: AgentClient;
 
-  public disableAutoTestReports: boolean;
-
-  public disableCommandReports: boolean;
-
-  public disableReports: boolean;
+  public readonly reporter: Reporter;
 
   private driverSessionId: string;
 
@@ -91,12 +88,13 @@ export default class CustomHttpCommandExecutor extends Executor {
     super(httpClient);
 
     this.agentClient = new AgentClient(capabilities);
-    this.driverSessionId = '';
-    this.disableCommandReports = false;
-    this.disableAutoTestReports = false;
-    this.disableReports = (capabilities.get(TestProjectCapabilities.DISABLE_REPORTS) as boolean) ?? false;
+    this.reporter = new Reporter(this.agentClient, this.getScreenshot.bind(this));
+    if (capabilities.get(TestProjectCapabilities.DISABLE_REPORTS) as boolean) {
+      this.reporter.disableReports = true;
+    }
 
     this.httpClient = httpClient;
+    this.driverSessionId = '';
     this.latestKnownTestName = '';
     this.excludedTestNames = [];
     this.disableRedaction = false;
@@ -134,7 +132,7 @@ export default class CustomHttpCommandExecutor extends Executor {
 
     // Report the test and terminate the session
     if (cmdName === SeleniumCommandName.QUIT) {
-      if (!this.disableAutoTestReports) {
+      if (!this.reporter.disableTestAutoReports) {
         this.reportTest();
       }
       super.execute(command) as unknown;
@@ -148,7 +146,7 @@ export default class CustomHttpCommandExecutor extends Executor {
     // If the name of the test changed, report the previous test to start a new one in the report
     const currentTestName = ReportHelper.inferTestName();
     if (
-      !this.disableAutoTestReports &&
+      !this.reporter.disableTestAutoReports &&
       this.latestKnownTestName.length > 0 &&
       this.latestKnownTestName !== currentTestName
     ) {
@@ -251,7 +249,7 @@ export default class CustomHttpCommandExecutor extends Executor {
     }
 
     if (this.isWebdriverWait) {
-      if (!this.disableReports && !this.disableCommandReports) {
+      if (!this.reporter.disableReports && !this.reporter.disableCommandReports) {
         // Only stash the command for reporting later when driver command reporting is enabled
         this.stashedCommand = driverCommandReport;
       }
@@ -260,7 +258,7 @@ export default class CustomHttpCommandExecutor extends Executor {
       return;
     }
 
-    if (!this.disableReports && !this.disableCommandReports) {
+    if (!this.reporter.disableReports && !this.reporter.disableCommandReports) {
       if (this.stashedCommand) {
         // report the stashed command and clear it
         this.agentClient.reportDriverCommand(this.stashedCommand);
@@ -278,7 +276,7 @@ export default class CustomHttpCommandExecutor extends Executor {
   public reportTest(): void {
     if (this.latestKnownTestName !== 'Unnamed Test') {
       // only report those tests that have been identified as one when their names were inferred
-      if (this.disableReports) {
+      if (this.reporter.disableReports) {
         // test reporting has been disabled by the user
         logger.debug(`Test ${this.latestKnownTestName} - [Passed]`);
         return;
@@ -297,19 +295,13 @@ export default class CustomHttpCommandExecutor extends Executor {
   /**
    * Creates a screenshot (PNG) and returns it as a base64 encoded string.
    *
-   * @returns {Promise<string | undefined>}
+   * @returns {Promise<string>}
    */
-  public async createScreenshot(): Promise<string | undefined> {
+  private async getScreenshot(): Promise<string> {
     const command = SeleniumHelper.buildSeleniumCommand(SeleniumCommandName.SCREENSHOT);
-
     command.setParameter('sessionId', this.agentClient.agentSession.sessionId);
 
-    const createScreenshotResponse = await this.execute(command, true);
-    if (createScreenshotResponse) {
-      return createScreenshotResponse as string;
-    }
-
-    return undefined;
+    return this.execute(command, true) as Promise<string>;
   }
 
   /**
