@@ -12,30 +12,29 @@
 // limitations under the License.
 
 import { assert } from 'chai';
-import { Options } from 'selenium-webdriver/firefox';
 import { Capabilities } from 'selenium-webdriver';
+import { Options } from 'selenium-webdriver/chrome';
 
-import LoginPage from '../pageobjects/web/loginPage';
-import ProfilePage from '../pageobjects/web/profilePage';
+import LoginPage from './pageobjects/loginPage';
+import ProfilePage from './pageobjects/profilePage';
 
-import ConfigHelper from '../../../src/sdk/internal/helpers/configHelper';
-import ThenableBaseDriver from '../../../src/sdk/drivers/base/thenableBaseDriver';
-import Builder from '../../../src/sdk/drivers/builder';
+import ConfigHelper from '../../../../src/sdk/internal/helpers/configHelper';
+import { Builder, ThenableBaseDriver } from '../../../../src/index';
 
-describe('Test firefoxbasic login and update profile', () => {
+describe('Login and update profile', () => {
   let driver: ThenableBaseDriver;
   let login: LoginPage;
   let profilePage: ProfilePage;
 
   beforeEach(() => {
-    const firefoxOptions = new Options();
-    firefoxOptions.headless();
+    const chromeOptions = new Options();
+    chromeOptions.headless();
     driver = new Builder()
-      .forBrowser('firefox')
+      .forBrowser('chrome')
       .withToken(ConfigHelper.developerToken())
-      .withCapabilities(Capabilities.firefox())
+      .withCapabilities(Capabilities.chrome())
+      .setChromeOptions(chromeOptions)
       .withProjectName('CI - Nodejs')
-      .setFirefoxOptions(firefoxOptions)
       .build();
   });
 
@@ -43,12 +42,21 @@ describe('Test firefoxbasic login and update profile', () => {
     await driver.quit();
   });
 
-  it('should return success if update profile succeeds', async () => {
+  it('should return success if update profile succeeds John Smith', async () => {
     login = new LoginPage(driver);
     await login.OpenUrl();
     await login.LoginAs('John Smith', '12345');
     profilePage = new ProfilePage(driver);
     await profilePage.UpdateProfile('Australia', 'Main Street 123', 'john@smith.org', '+1987654321');
+    assert.equal(await profilePage.SavedMessageIsDisplayed(), true);
+  });
+
+  it('should return success if update profile succeeds Bob Jones', async () => {
+    login = new LoginPage(driver);
+    await login.OpenUrl();
+    await login.LoginAs('Bob Jones', '12345');
+    profilePage = new ProfilePage(driver);
+    await profilePage.UpdateProfile('Canada', 'Maple Street 456', 'bob@jones.org', '+1123456789');
     assert.equal(await profilePage.SavedMessageIsDisplayed(), true);
   });
 });

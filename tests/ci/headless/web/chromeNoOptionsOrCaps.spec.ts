@@ -12,34 +12,29 @@
 // limitations under the License.
 
 import { assert } from 'chai';
-import { Options } from 'selenium-webdriver/chrome';
 import { Capabilities } from 'selenium-webdriver';
 
-import LoginPage from '../pageobjects/web/loginPage';
-import ProfilePage from '../pageobjects/web/profilePage';
+import LoginPage from './pageobjects/loginPage';
+import ProfilePage from './pageobjects/profilePage';
 
-import ConfigHelper from '../../../src/sdk/internal/helpers/configHelper';
-import ThenableBaseDriver from '../../../src/sdk/drivers/base/thenableBaseDriver';
-import Builder from '../../../src/sdk/drivers/builder';
+import ConfigHelper from '../../../../src/sdk/internal/helpers/configHelper';
+import { Builder, ThenableBaseDriver } from '../../../../src/index';
 
-describe('Test chromebasic login and update profile', () => {
+describe('Test update profile', () => {
   let driver: ThenableBaseDriver;
   let login: LoginPage;
   let profilePage: ProfilePage;
 
-  beforeEach(() => {
-    const chromeOptions = new Options();
-    chromeOptions.headless();
+  before(() => {
     driver = new Builder()
       .forBrowser('chrome')
       .withToken(ConfigHelper.developerToken())
       .withCapabilities(Capabilities.chrome())
       .withProjectName('CI - Nodejs')
-      .setChromeOptions(chromeOptions)
       .build();
   });
 
-  afterEach(async () => {
+  after(async () => {
     await driver.quit();
   });
 

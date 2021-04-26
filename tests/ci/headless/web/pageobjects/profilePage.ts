@@ -13,8 +13,8 @@
 
 import { By } from 'selenium-webdriver';
 
-import logger from '../../../../src/logger/logger';
-import ThenableBaseDriver from '../../../../src/sdk/drivers/base/thenableBaseDriver';
+import logger from '../../../../../src/logger/logger';
+import { ThenableBaseDriver } from '../../../../../src/index';
 
 export default class ProfilePage {
   textlabel_greetings = '#greetings';
