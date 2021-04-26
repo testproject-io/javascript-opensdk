@@ -31,26 +31,6 @@ export default class DriverCommandReport {
   ) {}
 
   /**
-   * Getter for the screenshot property.
-   *
-   * @returns {string | undefined}
-   */
-  public get ScreenShot(): string | undefined {
-    return this.screenshot;
-  }
-
-  /**
-   * Setter for the screenshot property.
-   *
-   * @param {string | undefined} value
-   *
-   * @returns {void}
-   */
-  public set ScreenShot(value: string | undefined) {
-    this.screenshot = value;
-  }
-
-  /**
    * Creates a JSON representation of the current DriverCommandReport instance.
    *
    * @returns {IPayLoadDriverCommandReport}

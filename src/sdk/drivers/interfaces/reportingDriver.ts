@@ -11,8 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export default (mochaIt: string, testName?: string, fileName?: string): void => {
-  process.env.MOCHA_CURRENT_TEST = mochaIt;
-  if (testName) process.env.MOCHA_CURRENT_DESCRIBE = testName;
-  if (fileName) process.env.MOCHA_CURRENT_FILENAME = fileName;
-};
+import Reporter from '../../reporter/reporter';
+
+/**
+ * IBaseDriver interface that extend Selenium WebDriver
+ */
+export default interface IReportingDriver {
+  /**
+   * @returns {Reporter} Instance of a TestProject Reporter class.
+   */
+  report(): Reporter;
+}

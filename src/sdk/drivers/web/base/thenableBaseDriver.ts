@@ -14,7 +14,7 @@
 import { promise } from 'selenium-webdriver';
 
 import BaseDriver from './baseDriver';
-import Reporter from '../../internal/reporter/reporter';
+import Reporter from '../../../reporter/reporter';
 
 /**
  * Thenable Base Driver - Extends base driver and IThenable BaseDriver

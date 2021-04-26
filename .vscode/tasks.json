@@ -20,8 +20,13 @@
     },
     {
       "type": "npm",
-      "script": "test",
+      "script": "tests",
       "group": "test",
+      "options": {
+        "env": {
+          "TP_DEV_TOKEN": "DUMMY"
+        }
+      },
       "problemMatcher": [],
       "label": "npm: test",
       "dependsOn": "npm: build"

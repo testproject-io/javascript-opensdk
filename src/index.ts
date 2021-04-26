@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import Builder from './sdk/drivers/builder';
-import ThenableBaseDriver from './sdk/drivers/base/thenableBaseDriver';
+import ThenableBaseDriver from './sdk/drivers/web/base/thenableBaseDriver';
 
 export { Builder };
 export { ThenableBaseDriver };

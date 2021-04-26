@@ -14,7 +14,7 @@
 import { Command } from 'selenium-webdriver';
 
 // eslint-disable-next-line import/no-cycle
-import CustomCommandExecutor from './customCommandExecutor';
+import CustomCommandExecutor from './seleniumCommandExecutor';
 import { SeleniumHelper, SeleniumCommandName } from './seleniumHelper';
 
 /**

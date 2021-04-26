@@ -11,19 +11,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import logger from '../../../logger/logger';
-import CustomTestReport from '../../../rest/messages/customTestReport';
-import StepReport from '../../../rest/messages/stepReport';
-import CustomCommandExecutor from '../helpers/customCommandExecutor';
-import ReportHelper from '../helpers/reportHelper';
+import logger from '../../logger/logger';
+import CustomTestReport from '../../rest/messages/customTestReport';
+import StepReport from '../../rest/messages/stepReport';
+import AgentClient from '../internal/agent/agentClient';
+import ReportHelper from '../internal/helpers/reportHelper';
+
+// Driver function for taking screenshots
+type GetScreenshot = () => Promise<string>;
 
 /**
  * Exposes reporting actions to the WebDriver object.
- *
- * @property {CustomCommandExecutor} - The command executor used to send Selenium WebDriver commands
  */
 export default class Reporter {
-  constructor(private customCommandExecutor: CustomCommandExecutor) {}
+  /**
+   * Enables or disables all types of reports.
+   */
+  public disableReports = false;
+
+  /**
+   * Enables or disables driver commands reporting.
+   */
+  public disableCommandReports = false;
+
+  /**
+   * Enables or disables automatic test reporting.
+   */
+  public disableTestAutoReports = false;
+
+  constructor(private agentClient: AgentClient, private getScreenshot: GetScreenshot) {
+    const disableAutoReports = process.env.TP_DISABLE_AUTO_REPORTS;
+
+    // Check if automatic test and driver command reports should be disabled
+    if (disableAutoReports && disableAutoReports.toLowerCase() === 'true') {
+      this.disableTestAutoReports = true;
+      this.disableCommandReports = true;
+    }
+  }
 
   /**
    * Sends a step report to the Agent Client.
@@ -37,8 +61,7 @@ export default class Reporter {
    */
   public async step(description: string, message: string, passed: boolean, screenshot?: boolean): Promise<void> {
     // First update the current test name and report a test if necessary
-    this.customCommandExecutor.updateKnownTestName();
-    if (this.customCommandExecutor.disableReports) {
+    if (this.disableReports) {
       logger.debug(`Step ${description} ${passed ? 'passed' : 'failed'}`);
       return;
     }
@@ -46,48 +69,28 @@ export default class Reporter {
     // Take a screenshot if requested
     let screenshotData: string | undefined;
     if (screenshot) {
-      screenshotData = (await this.customCommandExecutor.createScreenshot()) as string;
+      screenshotData = await this.getScreenshot();
     }
 
     const stepReport = new StepReport(description, message, passed, screenshotData);
-    this.customCommandExecutor.agentClient.reportStep(stepReport);
+    this.agentClient.reportStep(stepReport);
   }
 
   /**
    * Sends a test report to the Agent Client.
    *
    * @param {string} name - The test name
-   * @param {boolean} passed - True(default) if the test should be marked as passed, False otherwise
+   * @param {boolean} passed - True (default) if the test should be marked as passed, False otherwise
    * @param {string} message - A message that goes with the test
    *
    * @returns {void}
    */
   public test(name?: string, passed = true, message?: string): void {
-    if (!this.customCommandExecutor.disableReports) {
+    if (!this.disableReports) {
       const testName = name ?? ReportHelper.inferTestName();
-      if (!this.customCommandExecutor.disableAutoTestReports) {
-        const envFlag = process.env.RFW_SUPPRESS_WARNINGS;
-        const convertedValue = envFlag && (envFlag === 'true' || envFlag === 'false') ? envFlag === 'true' : undefined;
-        if (convertedValue) {
-          logger.warn(
-            'Automatic reporting is enabled, disable this using disable_reports flag\nwhen creating a driver instance to avoid duplicates in the report'
-          );
-        }
-      }
-
       const testReport = new CustomTestReport(testName, passed, message);
-      this.customCommandExecutor.agentClient.reportTest(testReport);
-    }
-  }
 
-  /**
-   * Disable auto reports, will disable/enable the automatic send of reports to the testproject platform
-   *
-   * @param {boolean} disabled - True to disable automatic commands reporting.
-   *
-   * @returns {void}
-   */
-  public disableAutoTestReports(disabled: boolean): void {
-    this.customCommandExecutor.disableAutoTestReports = disabled;
+      this.agentClient.reportTest(testReport);
+    }
   }
 }

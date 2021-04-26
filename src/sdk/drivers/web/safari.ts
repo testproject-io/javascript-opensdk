@@ -14,18 +14,16 @@
 import { Capabilities, CreateSessionCapabilities, WebDriver } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/safari';
 
-import CustomHttpCommandExecutor from '../../internal/helpers/customCommandExecutor';
-import Reporter from '../../internal/reporter/reporter';
-import IReportingDriver from '../base/reportingDriver';
+import CustomHttpCommandExecutor from '../../internal/helpers/seleniumCommandExecutor';
+import Reporter from '../../reporter/reporter';
+import IReportingDriver from '../interfaces/reportingDriver';
 
 /**
  * Safari class that extend original Safari driver - implement ItenableBaseDriver using the BaseDriver
  * @property {CustomHttpCommandExecutor} executer Extension of the Selenium Connection (command_executor)
  */
 export default class Safari extends WebDriver implements IReportingDriver {
-  private static executer: CustomHttpCommandExecutor;
-
-  private reporter!: Reporter;
+  private executor: CustomHttpCommandExecutor | null = null;
 
   /**
    * Creates a new session with the Safari.
@@ -35,9 +33,12 @@ export default class Safari extends WebDriver implements IReportingDriver {
   static createSession(opt_config?: Options | CreateSessionCapabilities): Safari {
     const caps = opt_config as Capabilities;
     const customCommandExecutor = new CustomHttpCommandExecutor(caps);
-    Safari.executer = customCommandExecutor;
 
-    return super.createSession(customCommandExecutor, caps) as Safari;
+    // Create and initialize a new instance
+    const instance = super.createSession(customCommandExecutor, caps) as Safari;
+    instance.executor = customCommandExecutor;
+
+    return instance;
   }
 
   /**
@@ -47,11 +48,10 @@ export default class Safari extends WebDriver implements IReportingDriver {
    * @returns {Reporter} - Instance of the TestProject Reporter
    */
   report(): Reporter {
-    // Create new reporter instance if doesn't exists
-    if (!this.reporter) {
-      this.reporter = new Reporter(Safari.executer);
+    if (!this.executor) {
+      throw new Error('Reporter not available due to incorrect driver construction!');
     }
 
-    return this.reporter;
+    return this.executor.reporter;
   }
 }
