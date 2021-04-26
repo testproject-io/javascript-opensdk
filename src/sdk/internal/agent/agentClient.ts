@@ -174,7 +174,7 @@ class AgentClient {
    */
   public async quitSession(): Promise<void> {
     // Drain the reporting queue before terminating the session
-    if (this.asyncReportingQueue?.length()) {
+    if (this.asyncReportingQueue?.length() || this.asyncReportingQueue?.running()) {
       logger.debug('Waiting for the reporting queue to drain...');
       await this.asyncReportingQueue?.drain();
     }
