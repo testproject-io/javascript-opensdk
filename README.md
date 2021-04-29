@@ -129,6 +129,22 @@ const createChromeDriver = async () => {
 };
 ```
 
+## Remote Agent
+
+By default, drivers communicate with the local Agent listening on http://localhost:8585.
+
+Agent URL (host and port), can be also provided explicitly using driver builder:
+
+```javascript
+driver = new Builder().forBrowser('chrome').withToken('YOUR_DEV_TOKEN').withRemoteAgent('http://URL:PORT').build();
+```
+
+It can also be set using the `TP_AGENT_URL` environment variable.
+
+**NOTE:** By default, the agent binds to localhost.
+In order to allow the SDK to communicate with agents running on a remote machine (_On the same network_), the agent should bind to an external interface.
+For additional documentation on how to achieve such, please refer [here](https://docs.testproject.io/testproject-agents/testproject-agent-cli#start)
+
 ## Implicit project and job names
 
 The SDK will attempt to infer Project and Job names automatically when running tests using the [Mocha](https://mochajs.org) framework. For example:
