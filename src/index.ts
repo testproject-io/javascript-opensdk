@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Builder from './sdk/drivers/builder';
+import Builder from './sdk/drivers/webBuilder';
+import MobileBuilder from './sdk/drivers/mobileBuilder';
 import ThenableBaseDriver from './sdk/drivers/web/base/thenableBaseDriver';
 
-export { Builder };
 export { ThenableBaseDriver };
+export { Builder, MobileBuilder };
