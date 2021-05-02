@@ -26,7 +26,7 @@ function DetectParents(test: any) {
   const describes: string[] = [];
   let currentParent = test.parent;
 
-  while (currentParent) {
+  while (currentParent && currentParent.title.length > 0) {
     describes.push(currentParent.title);
     currentParent = currentParent.parent;
   }

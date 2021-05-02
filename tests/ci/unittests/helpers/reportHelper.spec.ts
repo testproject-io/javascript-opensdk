@@ -25,7 +25,7 @@ describe('Report Helper Test', () => {
   });
 
   it('Should return job name correctly', () => {
-    assert.equal(ReportHelper.inferJobName(), 'reportHelper');
+    assert.equal(ReportHelper.inferJobName(), 'Report Helper Test');
   });
 
   it('Should return test name is inferred correctly from method name and parameter values', () => {

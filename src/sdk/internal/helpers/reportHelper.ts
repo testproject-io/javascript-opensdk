@@ -82,10 +82,16 @@ export default class ReportHelper {
    * @returns {string} The inferred job name (typically the test file name (without the .ts extension)
    */
   public static inferJobName(): string {
-    // Did we set the job name using our decorator?
-    const jobNameInDecorator = process.env.TP_JOB_NAME;
-    if (jobNameInDecorator) {
-      return jobNameInDecorator;
+    const { TP_JOB_NAME, MOCHA_DESCRIBE_TREE } = process.env;
+
+    // User specified project name
+    if (TP_JOB_NAME) {
+      return TP_JOB_NAME;
+    }
+
+    // Mocha inferred project name
+    if (MOCHA_DESCRIBE_TREE) {
+      return MOCHA_DESCRIBE_TREE;
     }
 
     let result = 'Unnamed Job';
