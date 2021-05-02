@@ -17,10 +17,9 @@
  * @enum {number}
  */
 enum ReportType {
-  DEFAULT = 0,
-  CLOUD = 1,
-  LOCAL = 2,
-  CLOUD_AND_LOCAL = 3,
+  CLOUD = 0,
+  LOCAL = 1,
+  CLOUD_AND_LOCAL = 2,
 }
 
 export default ReportType;
