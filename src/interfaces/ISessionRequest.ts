@@ -44,4 +44,14 @@ export default interface ISessionRequest {
    * @member {string} reportType - Where to send the report
    */
   reportType: string;
+
+  /**
+   * @member {string} reportName - Custom local report name
+   */
+  reportName: string;
+
+  /**
+   * @member {string} reportPath - Custom local report path
+   */
+  reportPath: string;
 }

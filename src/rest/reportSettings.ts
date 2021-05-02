@@ -13,9 +13,19 @@
 
 /**
  * Contains settings to be used in the report.
+ *
  * @property {string} projectName - Project name to report
  * @property {string} jobName - Job name to report
+ * @property {string} reportType - Report type (Cloud, Local or Both)
+ * @property {string} reportName - Custom local report file name
+ * @property {string} reportPath - Custom local report path
  */
 export default class ReportSettings {
-  constructor(public projectName: string = '', public jobName: string = '') {}
+  constructor(
+    public projectName: string = '',
+    public jobName: string = '',
+    public reportType: string = '',
+    public reportName: string = '',
+    public reportPath: string = ''
+  ) {}
 }

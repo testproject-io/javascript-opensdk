@@ -13,18 +13,16 @@
 
 import { Capabilities } from 'selenium-webdriver';
 
-import ReportType from '../../enums/reportType';
 import ISessionRequest from '../../interfaces/ISessionRequest';
 import ConfigHelper from '../../sdk/internal/helpers/configHelper';
 import ReportSettings from '../reportSettings';
 
 /**
  * Represent a request message object to be sent to the Agent to initialize a new session
- * @property {string} language - Test code language (Nodejs, obviously)
- * @property {string} sdkVersion - Current Nodejs SDK version
- * @property {Capabilities} capabilities - Desired session capabilities
- * @property {string} projectName - Project name to report
- * @property {string} jobName - Job name to report
+ * @property {string} language Test code language (Nodejs, obviously)
+ * @property {string} sdkVersion Current Nodejs SDK version
+ * @property {ReportSettings} reportSettings Report settings
+ * @property {Capabilities} capabilities Desired session capabilities
  */
 
 export default class SessionRequest {
@@ -32,24 +30,7 @@ export default class SessionRequest {
 
   private sdkVersion = ConfigHelper.sdkVersion();
 
-  private capabilities: Capabilities;
-
-  private projectName = '';
-
-  private jobName = '';
-
-  constructor(reportSettings: ReportSettings, capabilities?: Capabilities) {
-    if (reportSettings !== undefined) {
-      this.projectName = reportSettings.projectName;
-      this.jobName = reportSettings.jobName;
-    }
-
-    if (capabilities === undefined) {
-      this.capabilities = new Capabilities();
-    } else {
-      this.capabilities = capabilities;
-    }
-  }
+  constructor(private reportSettings: ReportSettings, private capabilities: Capabilities) {}
 
   /**
    * Capabilities as object.
@@ -63,7 +44,10 @@ export default class SessionRequest {
 
     const m: any = {};
     caps.map_.forEach((value: string, key: string) => {
-      m[key] = value;
+      // Filter out TestProject specific capabilities
+      if (!key.startsWith('_tp')) {
+        m[key] = value;
+      }
     });
 
     return m;
@@ -80,9 +64,11 @@ export default class SessionRequest {
       language: this.language,
       sdkVersion: this.sdkVersion,
       capabilities: this.capsAsObject(),
-      projectName: this.projectName,
-      jobName: this.jobName,
-      reportType: (this.capabilities.get('reportType') as string) || (ReportType[ReportType.CLOUD_AND_LOCAL] as string),
+      projectName: this.reportSettings.projectName,
+      jobName: this.reportSettings.jobName,
+      reportType: this.reportSettings.reportType,
+      reportName: this.reportSettings.reportName,
+      reportPath: this.reportSettings.reportPath,
     };
   }
 }
