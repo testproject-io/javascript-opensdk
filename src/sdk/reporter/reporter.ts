@@ -69,7 +69,13 @@ export default class Reporter {
     // Take a screenshot if requested
     let screenshotData: string | undefined;
     if (screenshot) {
-      screenshotData = await this.getScreenshot();
+      try {
+        // Do not report the screenshot command
+        this.disableCommandReports = true;
+        screenshotData = await this.getScreenshot();
+      } finally {
+        this.disableCommandReports = false;
+      }
     }
 
     const stepReport = new StepReport(description, message, passed, screenshotData);
