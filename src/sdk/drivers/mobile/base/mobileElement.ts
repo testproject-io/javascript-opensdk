@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { Client } from 'webdriver';
+import { RectReturn } from '@wdio/protocols/build/types';
 
 import { SeleniumCommandName } from '../../../internal/helpers/seleniumHelper';
 import MobileCommandsReporter from '../../../internal/helpers/mobileCommandsReporter';
@@ -37,6 +38,20 @@ export default class MobileElement {
       SeleniumCommandName.IS_ELEMENT_ENABLED,
       this.id,
       this.driverClient.isElementEnabled.bind(this.driverClient, this.id)
+    );
+  }
+
+  /**
+   * The Take Element Screenshot command takes a screenshot of the visible region encompassed by the bounding rectangle of an element.
+   *
+   * @returns {string} Screenshot data
+   * @ref https://w3c.github.io/webdriver/#dfn-take-element-screenshot
+   */
+  public async takeScreenshot(scroll?: boolean): Promise<string> {
+    return this.commandsReporter.reportElementCommandWrapper(
+      SeleniumCommandName.SCREENSHOT,
+      this.id,
+      this.driverClient.takeElementScreenshot.bind(this.driverClient, this.id, scroll)
     );
   }
 
@@ -101,6 +116,20 @@ export default class MobileElement {
   }
 
   /**
+   * The Get Element Tag Name command returns the qualified element name of the given web element.
+   *
+   * @returns {string} qualified element name of the given web element
+   * @ref https://w3c.github.io/webdriver/#dfn-get-element-tag-name
+   */
+  public async getTagName(): Promise<string> {
+    return this.commandsReporter.reportElementCommandWrapper(
+      SeleniumCommandName.GET_ELEMENT_TAG_NAME,
+      this.id,
+      this.driverClient.getElementTagName.bind(this.driverClient, this.id)
+    );
+  }
+
+  /**
    * Scrolls into view the form control element and then sends the provided keys to the element.
    * In case the element is not keyboard-interactable, an element not interactable error is returned.
    * The key input state used for input may be cleared mid-way through "typing" by sending the null key, which is U+E000 (NULL).
@@ -127,6 +156,33 @@ export default class MobileElement {
       SeleniumCommandName.CLEAR_ELEMENT,
       this.id,
       this.driverClient.elementClear.bind(this.driverClient, this.id)
+    );
+  }
+
+  /**
+   * The Get Element CSS Value command retrieves the computed value of the given CSS property of the given web element.
+   *
+   * @returns {string} result of getting a css value of an element
+   * @ref https://w3c.github.io/webdriver/#dfn-get-element-css-value
+   */
+  public async getCSSValue(propertyName: string): Promise<string> {
+    return this.commandsReporter.reportElementCommandWrapper(
+      SeleniumCommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+      this.id,
+      this.driverClient.getElementCSSValue.bind(this.driverClient, this.id, propertyName)
+    );
+  }
+
+  /**
+   * The Get Element Rect command returns the dimensions and coordinates of the given web element.
+   *
+   * @ref https://w3c.github.io/webdriver/#dfn-get-element-rect
+   */
+  public async getRect(): Promise<RectReturn> {
+    return this.commandsReporter.reportElementCommandWrapper(
+      SeleniumCommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+      this.id,
+      this.driverClient.getElementRect.bind(this.driverClient, this.id)
     );
   }
 

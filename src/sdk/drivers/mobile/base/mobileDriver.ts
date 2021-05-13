@@ -13,6 +13,7 @@
 
 import { By, Capabilities } from 'selenium-webdriver';
 import WebDriver, { Client } from 'webdriver';
+import { ProtocolCommandResponse, StringsReturn } from '@wdio/protocols/build/types';
 
 import logger from '../../../../logger/logger';
 import IReportingDriver from '../../interfaces/reportingDriver';
@@ -146,34 +147,298 @@ export default abstract class MobileDriver implements IReportingDriver {
    * @ref http://appium.io/docs/en/commands/device/app/reset-app/
    */
   public async resetApp(): Promise<void> {
-    await this.driverClient.reset();
+    return this.driverClient.reset();
+  }
+
+  /**
+   * Launch an app on device.
+   * iOS tests with XCUITest can also use the `mobile: launchApp` method.
+   * See detailed [documentation](http://appium.io/docs/en/writing-running-appium/ios/ios-xctest-mobile-apps-management/index.html#mobile-launchapp).
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/launch-app/
+   */
+  public async launchApp(): Promise<void> {
+    await this.driverClient.launchApp();
+  }
+
+  /**
+   * Send the currently running app for this session to the background.
+   * iOS tests with XCUITest can also use the `mobile: terminateApp` method
+   * to terminate the current app (see detailed [documentation](http://appium.io/docs/en/writing-running-appium/ios/ios-xctest-mobile-apps-management/index.html#mobile-terminateapp)),
+   * and the `mobile: activateApp` to activate an existing application on
+   * the device under test and moves it to the foreground (see detailed [documentation](http://appium.io/docs/en/writing-running-appium/ios/ios-xctest-mobile-apps-management/index.html#mobile-activateapp)).
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/background-app/
+   */
+  public async backgroundApp(seconds: number | null): Promise<void> {
+    return this.driverClient.background(seconds);
+  }
+
+  /**
+   * Get app strings.
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/get-app-strings/
+   */
+  public async getAppStrings(language?: string, stringFile?: string): Promise<StringsReturn> {
+    return this.driverClient.getStrings(language, stringFile);
+  }
+
+  /**
+   * No description available, please see reference link.
+   *
+   * @ref https://github.com/appium/appium-base-driver/blob/master/docs/mjsonwp/protocol-methods.md#appium-extension-endpoints
+   */
+  public async setValueImmediate(elementId: string, value: string): Promise<void> {
+    return this.driverClient.setValueImmediate(elementId, value);
+  }
+
+  /**
+   * This functionality is only available from within a native context.
+   * 'Touch Perform' works similarly to the other singular touch interactions,
+   * except that this allows you to chain together more than one touch action as one command.
+   * This is useful because Appium commands are sent over the network and there's latency between commands.
+   * This latency can make certain touch interactions impossible because some interactions need to be performed in one sequence.
+   * Vertical, for example, requires pressing down, moving to a different y coordinate, and then releasing.
+   * For it to work, there can't be a delay between the interactions.
+   *
+   * @ref http://appium.io/docs/en/commands/interactions/touch/touch-perform/
+   *
+   * @example
+   * ```js
+   * // do a horizontal swipe by percentage
+   * const startPercentage = 10;
+   * const endPercentage = 90;
+   * const anchorPercentage = 50;
+   *
+   * const { width, height } = driver.getWindowSize();
+   * const anchor = height// anchorPercentage / 100;
+   * const startPoint = width// startPercentage / 100;
+   * const endPoint = width// endPercentage / 100;
+   * driver.touchPerform([
+   *   {
+   *     action: 'press',
+   *     options: {
+   *       x: startPoint,
+   *       y: anchor,
+   *     },
+   *   },
+   *   {
+   *     action: 'wait',
+   *     options: {
+   *       ms: 100,
+   *     },
+   *   },
+   *   {
+   *     action: 'moveTo',
+   *     options: {
+   *       x: endPoint,
+   *       y: anchor,
+   *     },
+   *   },
+   *   {
+   *     action: 'release',
+   *     options: {},
+   *   },
+   * ]);
+   * ```
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  public async touchPerform(actions: object[]): Promise<void> {
+    return this.driverClient.touchPerform(actions);
+  }
+
+  /**
+   * This functionality is only available from within a native context.
+   * Perform a multi touch action sequence.
+   *
+   * @ref http://appium.io/docs/en/commands/interactions/touch/multi-touch-perform/
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  public async multiTouchPerform(actions: object[]): Promise<void> {
+    return this.driverClient.multiTouchPerform(actions);
+  }
+
+  /**
+   * Get events stored in appium server.
+   *
+   * @ref https://github.com/appium/appium/blob/master/docs/en/commands/session/events/get-events.md
+   */
+  public async getEvents(type: string[]): Promise<ProtocolCommandResponse> {
+    return this.driverClient.getEvents(type);
+  }
+
+  /**
+   * Store a custom event.
+   *
+   * @ref https://github.com/appium/appium/blob/master/docs/en/commands/session/events/log-event.md
+   */
+  public async logEvent(vendor: string, event: string): Promise<void> {
+    return this.driverClient.logEvent(vendor, event);
   }
 
   /**
    * Hide soft keyboard.
    *
    * @ref http://appium.io/docs/en/commands/device/keys/hide-keyboard/
-   *
    */
   public async hideKeyboard(): Promise<void> {
     await this.driverClient.hideKeyboard();
   }
 
   /**
-   * Whether or not the soft keyboard is shown.
+   * Appium Protocol Command
    *
-   * @returns {boolean} true if keyboard is shown or false otherwise.
-   * @ref http://appium.io/docs/en/commands/device/keys/is-keyboard-shown/
+   * Get the time on the device.
+   *
+   * @returns {string} time on the device.
+   * @ref http://appium.io/docs/en/commands/device/system/system-time/
    *
    */
-  public async isKeyboardShown(): Promise<boolean> {
-    return this.driverClient.isKeyboardShown();
+  public async getDeviceTime(): Promise<string> {
+    return this.driverClient.getDeviceTime();
+  }
+
+  /**
+   * Get the given app status on the device
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/app-state/
+   */
+  public async appState(appId?: string, bundleId?: string): Promise<number> {
+    return this.driverClient.queryAppState(appId, bundleId);
+  }
+
+  /**
+   * Check whether the specified app is installed on the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/is-app-installed/
+   */
+  public async isAppInstalled(appId?: string, bundleId?: string): Promise<boolean> {
+    return this.driverClient.isAppInstalled(appId, bundleId);
+  }
+
+  /**
+   * Terminate the given app on the device
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/terminate-app/
+   */
+  public async terminateApp(appId?: string, bundleId?: string): Promise<void> {
+    return this.driverClient.terminateApp(appId, bundleId);
+  }
+
+  /**
+   * Returns the information of the system state which is supported to read as like cpu, memory, network traffic, and battery.
+   *
+   * @returns {string[]} information of the system state which is supported
+   * @ref http://appium.io/docs/en/commands/device/performance-data/get-performance-data/
+   */
+  public async getPerformanceData(packageName: string, dataType: string, dataReadTimeout?: number): Promise<string[]> {
+    return this.driverClient.getPerformanceData(packageName, dataType, dataReadTimeout);
+  }
+
+  /**
+   * Returns the information types of the system state which is supported to read as like cpu, memory, network traffic, and battery.
+   *
+   * @returns {string[]} information types of the system state
+   * @ref http://appium.io/docs/en/commands/device/performance-data/performance-data-types/
+   */
+  public async getPerformanceDataTypes(): Promise<string[]> {
+    return this.driverClient.getPerformanceDataTypes();
+  }
+
+  /**
+   * Activate the given app onto the device
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/activate-app/
+   */
+  public async activateApp(appId?: string, bundleId?: string): Promise<void> {
+    return this.driverClient.activateApp(appId, bundleId);
+  }
+
+  /**
+   * Install the given app onto the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/install-app/
+   */
+  public async installApp(appPath: string): Promise<void> {
+    return this.driverClient.installApp(appPath);
+  }
+
+  /**
+   * Remove an app from the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/remove-app/
+   */
+  public async removeApp(appId?: string, bundleId?: string): Promise<void> {
+    return this.driverClient.removeApp(appId, bundleId);
+  }
+
+  /**
+   * Close an app on device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/app/close-app/
+   */
+  public async closeApp(): Promise<void> {
+    return this.driverClient.closeApp();
+  }
+
+  /**
+   * Lock the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/interactions/lock/
+   */
+  public async lock(seconds?: number): Promise<void> {
+    return this.driverClient.lock(seconds);
+  }
+
+  /**
+   * Start recording the screen.
+   *
+   * @ref http://appium.io/docs/en/commands/device/recording-screen/start-recording-screen/
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  public async startRecordingScreen(options?: object): Promise<void> {
+    return this.startRecordingScreen(options);
+  }
+
+  /**
+   * Stop recording screen
+   *
+   * @ref http://appium.io/docs/en/commands/device/recording-screen/stop-recording-screen/
+   */
+  public async stopRecordingScreen(
+    remotePath?: string,
+    username?: string,
+    password?: string,
+    method?: string
+  ): Promise<string> {
+    return this.driverClient.stopRecordingScreen(remotePath, username, password, method);
+  }
+
+  /**
+   * Get the time on the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/system/system-time/
+   */
+  public async systemTime(): Promise<string> {
+    return this.driverClient.getDeviceTime();
+  }
+
+  /**
+   * Appium Protocol Command
+   *
+   * Retrieve a file from the device's file system.
+   * @ref http://appium.io/docs/en/commands/device/files/pull-file/
+   *
+   */
+  public pullFile(path: string): Promise<string> {
+    return this.driverClient.pullFile(path);
   }
 
   /**
    * Takes a screenshot of the context's viewport.
    *
    * @returns {string} Base64 representation of a screenshot.
+   *
    * @ref https://w3c.github.io/webdriver/#dfn-take-screenshot
    */
   public async takeScreenshot(): Promise<string> {

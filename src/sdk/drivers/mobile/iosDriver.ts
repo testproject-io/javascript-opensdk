@@ -38,6 +38,61 @@ export default class IOSDriver extends MobileDriver {
     return IOSDriver.createMobileSession(caps);
   }
 
+  /**
+   * Perform a shake action on the device.
+   *
+   * @ref http://appium.io/docs/en/commands/device/interactions/shake/
+   */
+  public async shake(): Promise<void> {
+    return this.driverClient.shake();
+  }
+
+  /**
+   * Rotate the device in three dimensions.
+   *
+   * @ref http://appium.io/docs/en/commands/device/interactions/rotate/
+   */
+  public async rotateDevice(
+    x: number,
+    y: number,
+    radius: number,
+    rotation: number,
+    touchCount: number,
+    duration: number,
+    element?: string
+  ): Promise<void> {
+    return this.driverClient.rotateDevice(x, y, radius, rotation, touchCount, duration, element);
+  }
+
+  /**
+   * Simulate a [touch id](https://support.apple.com/en-ca/ht201371) event (iOS Simulator only).
+   * To enable this feature, the `allowTouchIdEnroll` desired capability must be set to true and the Simulator
+   * must be [enrolled](https://support.apple.com/en-ca/ht201371).
+   *
+   * When you set allowTouchIdEnroll to true, it will set the Simulator to be enrolled by default.
+   * The enrollment state can be [toggled](http://appium.io/docs/en/commands/device/simulator/toggle-touch-id-enrollment/index.html).
+   * This call will only work if Appium process or its parent application (e.g. Terminal.app or Appium.app) has access
+   * to Mac OS accessibility in System Preferences > Security & Privacy > Privacy > Accessibility list.
+   *
+   * @ref http://appium.io/docs/en/commands/device/simulator/touch-id/
+   */
+  public async touchId(match: boolean): Promise<void> {
+    return this.driverClient.touchId(match);
+  }
+
+  /**
+   * Toggle the simulator being [enrolled](https://support.apple.com/en-ca/ht201371) to accept touchId (iOS Simulator only).
+   * To enable this feature, the `allowTouchIdEnroll` desired capability must be set to true.
+   * When `allowTouchIdEnroll` is set to true the Simulator will be enrolled by default, and the 'Toggle Touch ID Enrollment'
+   * changes the enrollment state. This call will only work if the Appium process or its parent application (e.g., Terminal.app or Appium.app)
+   * has access to Mac OS accessibility in System Preferences > Security & Privacy > Privacy > Accessibility list.
+   *
+   * @ref http://appium.io/docs/en/commands/device/simulator/toggle-touch-id-enrollment/
+   */
+  public async toggleEnrollTouchId(enabled?: boolean): Promise<void> {
+    return this.driverClient.toggleEnrollTouchId(enabled);
+  }
+
   /** @inheritdoc */
   public async findElement(locator: By): Promise<MobileElement> {
     if (!this.driverClient) {
