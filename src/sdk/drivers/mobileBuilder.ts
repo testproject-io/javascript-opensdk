@@ -12,58 +12,30 @@
 // limitations under the License.
 
 import BaseBuilder from './baseBuilder';
-import AndroidDriver from './mobile/androidDriver';
-import IOSDriver from './mobile/iosDriver';
 import MobileDriver from './mobile/base/mobileDriver';
+import SessionResponse from '../../rest/messages/sessionResponse';
+import AgentClient from '../internal/agent/agentClient';
 
-/**
- * Enum supported mobile platforms.
- * @enum {string}
- */
-export enum Platform {
-  Android = 'Android',
-  iOS = 'iOS',
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default class MobileBuilder extends BaseBuilder<MobileBuilder, Promise<MobileDriver>> {
-  private platform?: Platform;
-
-  /**
-   * Set the target mobile platform.
-   *
-   * @param {Platform} platform Target mobile platform
-   *
-   * @returns {MobileBuilder} Self reference
-   */
-  withPlatform(platform: Platform): MobileBuilder {
-    this.platform = platform;
-    return this;
+export default class MobileBuilder<T extends MobileDriver> extends BaseBuilder<MobileBuilder<T>, Promise<T>> {
+  constructor(private DriverType: new (sessionResponse: SessionResponse, agentClient: AgentClient) => T) {
+    super();
   }
 
   /**
    * Builds a mobile driver.
    *
-   * @returns {Promise<MobileDriver>} Promise to a MobileDriver instance.
+   * @returns {Promise<T>} Promise to a MobileDriver instance.
    */
-  async build(): Promise<MobileDriver> {
-    // Make sure a target platform was selected
-    if (!this.platform) {
-      throw new Error('You must choose the target platform by calling the `withPlatform()` method!');
-    }
-
+  async build(): Promise<T> {
     // Add TP specific capabilities based on the user "with" calls
     this.addTestProjectCapabilities();
 
-    switch (this.platform) {
-      case Platform.Android:
-        return AndroidDriver.createSession(this.seleniumBuilder.getCapabilities());
-        break;
-      case Platform.iOS:
-        return IOSDriver.createSession(this.seleniumBuilder.getCapabilities());
-        break;
-      default:
-        throw new Error(`Unsupported platform: ${Platform[this.platform] as string}`);
-    }
+    // Assume that the specific MobileDriver child class has a static `createSession` method.
+    // Call this method to create the specific session
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return (this.DriverType.createSession(this.seleniumBuilder.getCapabilities()) as unknown) as Promise<T>;
   }
 }
