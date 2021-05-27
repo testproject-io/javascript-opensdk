@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2021-05-27
+
+### Added
+
+- Initial support for Mobile - Android and iOS
+
+### Fixed
+
+- Align report type enum with the latest Agent
+- Resolve a dead-lock in the async report queue
+
 ## [0.0.2] - 2021-04-14
 
 ### Added
