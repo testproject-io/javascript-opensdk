@@ -57,10 +57,6 @@ class AgentClient {
   // Async queue for reporting command in the background
   private asyncReportingQueue?: async.QueueObject<QueueItem>;
 
-  private projectName: string;
-
-  private jobName: string;
-
   constructor(caps: Capabilities) {
     this.capabilities = caps;
     this.token = caps.get(TestProjectCapabilities.DEVELOPMENT_TOKEN) as string;
@@ -79,21 +75,14 @@ class AgentClient {
       this.remoteAddress = ConfigHelper.agentServiceAddress();
     }
 
-    // Check if a custom project name was specified
-    if (caps.has(TestProjectCapabilities.PROJECT_NAME)) {
-      this.projectName = caps.get(TestProjectCapabilities.PROJECT_NAME) as string;
-    } else {
-      this.projectName = ReportHelper.inferProjectName();
-    }
-
-    // Check if a custom job name was specified
-    if (caps.has(TestProjectCapabilities.JOB_NAME)) {
-      this.jobName = caps.get(TestProjectCapabilities.JOB_NAME) as string;
-    } else {
-      this.jobName = ReportHelper.inferJobName();
-    }
-
-    this.reportSettings = new ReportSettings(this.projectName, this.jobName);
+    // Build reporting settings object
+    this.reportSettings = new ReportSettings(
+      (caps.get(TestProjectCapabilities.PROJECT_NAME) as string) || ReportHelper.inferProjectName(),
+      (caps.get(TestProjectCapabilities.JOB_NAME) as string) || ReportHelper.inferJobName(),
+      (caps.get(TestProjectCapabilities.REPORT_TYPE) as string) || '',
+      (caps.get(TestProjectCapabilities.REPORT_NAME) as string) || '',
+      (caps.get(TestProjectCapabilities.REPORT_PATH) as string) || ''
+    );
 
     // Create and asynchronous queue for reporting results to the Agent
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

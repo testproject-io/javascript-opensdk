@@ -14,13 +14,15 @@
 /**
  * Test project custom capabilities.
  */
-const enum TestProjectCapabilities {
-  DEVELOPMENT_TOKEN = 'tpDevToken',
-  REMOTE_AGENT_ADDRESS = 'tpRemoteAgentAddr',
-  PROJECT_NAME = 'tpProjectName',
-  JOB_NAME = 'tpJobName',
-  DISABLE_REPORTS = 'disableReports',
-  REPORT_TYPE = 'reportType',
+enum TestProjectCapabilities {
+  DEVELOPMENT_TOKEN = '_tpDevToken',
+  REMOTE_AGENT_ADDRESS = '_tpRemoteAgentAddr',
+  PROJECT_NAME = '_tpProjectName',
+  JOB_NAME = '_tpJobName',
+  DISABLE_REPORTS = '_tpDisableReports',
+  REPORT_TYPE = '_tpReportType',
+  REPORT_NAME = '_tpReportName',
+  REPORT_PATH = '_tpReportPath',
 }
 
 export default TestProjectCapabilities;

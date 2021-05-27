@@ -8,6 +8,7 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    // "plugin:jsdoc/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -18,11 +19,26 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "jsdoc",
     "prettier"
   ],
   "rules": {
     "prettier/prettier": [
       "error"
+    ],
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "line": {
+          "markers": [
+            "#region",
+            "#endregion",
+            "region",
+            "endregion"
+          ]
+        }
+      }
     ]
   }
 }

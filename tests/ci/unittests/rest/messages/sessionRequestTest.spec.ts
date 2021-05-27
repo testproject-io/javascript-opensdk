@@ -22,7 +22,13 @@ describe('test sessionrequest to json', () => {
   it('Should return json', () => {
     const sdkVersion = { sdkVersion: '1.2.3.4' }; // # mock the response to get_sdk_version() as this will change over time
     const capabilities: Capabilities = new Capabilities().set('param', 'value');
-    const reportSettings = new ReportSettings('my_project', 'my_job');
+    const reportSettings = new ReportSettings(
+      'my_project',
+      'my_job',
+      ReportType[ReportType.CLOUD_AND_LOCAL],
+      'My Report',
+      '/dummy/path'
+    );
     const sessionRequest = new SessionRequest(reportSettings, capabilities);
     assert.deepEqual(
       { ...sessionRequest.toObject(), ...sdkVersion },
@@ -33,6 +39,8 @@ describe('test sessionrequest to json', () => {
         capabilities: { param: 'value' },
         sdkVersion: '1.2.3.4',
         reportType: ReportType[ReportType.CLOUD_AND_LOCAL] as string,
+        reportName: 'My Report',
+        reportPath: '/dummy/path',
       }
     );
   });

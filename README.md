@@ -16,7 +16,7 @@ With one unified SDK available across multiple languages, developers and testers
 With TestProject SDK, users save a bunch of time and enjoy the following benefits out of the box:
 
 - 100% open source and available as an [NPM](https://www.npmjs.com/package/@tpio/javascript-opensdk) package.
-- 5-minute simple Selenium setup with a single [Agent](https://docs.testproject.io/testproject-agents) deployment.
+- 5-minute simple Selenium and Appium setup with a single [Agent](https://docs.testproject.io/testproject-agents) deployment.
 - Automatic test reports in HTML/PDF format (including screenshots).
 - Collaborative reporting dashboards with execution history and RESTful API support.
 - Always up-to-date with the latest and stable Selenium driver version.
@@ -94,19 +94,22 @@ export const simpleTest = async (): Promise<void> => {
 
 ## Drivers
 
-TestProject's OpenSDK overrides standard Selenium drivers with extended functionality. \
+TestProject's OpenSDK overrides standard Selenium/Appium drivers with extended functionality. \
 Below is the package's structure containing all supported drivers:
 
 ```ascii
 src
  └── sdk
       └── drivers
-             └── web
-                  ├── chrome
-                  ├── edge
-                  ├── firefox
-                  ├── ie (Legacy Internet Explorer)
-                  └── safari
+             ├── web
+             │    ├── chrome
+             │    ├── edge
+             │    ├── firefox
+             │    ├── ie (Legacy Internet Explorer)
+             │    └── safari
+             └── mobile
+                  ├── androidDriver
+                  └── iosDriver
 ```
 
 ## Development token
@@ -263,6 +266,15 @@ const testTemporarilyDisableAllReportingThenReenableItLater = async () => {
 
 Even more so than with regular Selenium-based tests, it is important to make sure that you call the `quit()` method of the driver object at the end of every test that uses the TestProject SDK.
 Upon calling `quit()`, the SDK will send all remaining report items to the Agent, ensuring that your report on the TestProject platform is complete.
+
+# Examples
+
+Examples are available at the [OpenSDK Examples](https://github.com/testproject-io/opensdk-examples/tree/main/javascript) repo, but tests from this repo can be used as simple examples as well:
+
+- Simple Flows
+  - [Web](tests/ci/headless/web/chromeBasic.spec.ts)
+  - [Android](tests/mobile/basicAndroid.spec.ts)
+  - [iOS](tests/mobile/basicIOS.spec.ts)
 
 # License
 
