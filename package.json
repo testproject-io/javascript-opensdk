@@ -42,7 +42,7 @@
     "@types/selenium-webdriver": "^3.0.17",
     "@wdio/protocols": "^7.4.2",
     "async": "^3.2.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "css-selector-parser": "^1.4.1",
     "detect-mocha": "^0.1.0",
     "guid-typescript": "^1.0.9",
@@ -51,7 +51,7 @@
     "selenium-webdriver": "^3.6.0",
     "sleep-promise": "^9.1.0",
     "stack-trace": "0.0.10",
-    "url-parse": "^1.5.1",
+    "url-parse": "^1.5.2",
     "webdriver": "^7.4.6",
     "winston": "^3.3.3"
   },
