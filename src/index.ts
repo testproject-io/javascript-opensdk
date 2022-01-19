@@ -14,6 +14,9 @@
 import Builder from './sdk/drivers/webBuilder';
 import MobileBuilder from './sdk/drivers/mobileBuilder';
 import ThenableBaseDriver from './sdk/drivers/web/base/thenableBaseDriver';
+import AndroidDriver from './sdk/drivers/mobile/androidDriver';
+import IOSDriver from './sdk/drivers/mobile/iosDriver';
 
 export { ThenableBaseDriver };
 export { Builder, MobileBuilder };
+export { AndroidDriver, IOSDriver };
